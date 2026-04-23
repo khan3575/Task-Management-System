@@ -1,19 +1,19 @@
 package util;
-
+ 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+ 
 public class DBConnection {
-
+ 
     private static volatile DBConnection instance;
-
+ 
     private Connection connection;
-
+ 
     private static final String URL = "jdbc:mysql://localhost:3306/task_management_system";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "mysql";
-
+ 
     private DBConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -25,7 +25,7 @@ public class DBConnection {
             throw new RuntimeException(e);
         }
     }
-
+ 
    
     public static DBConnection getInstance() {
         if (instance == null) {
@@ -35,12 +35,12 @@ public class DBConnection {
         }
         return instance;
     }
-
+ 
    
     public Connection getConnection() {
         return connection;
     }
-
+ 
     
     public void closeConnection() {
         if (connection != null) {
@@ -52,5 +52,5 @@ public class DBConnection {
             }
         }
     }
-
+ 
 }
