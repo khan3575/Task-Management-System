@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.TaskDTO;
+import util.DBConnection;
+
 
 public class TaskDAO {
 	// FAHIM's method: Add a new task to database
     public boolean addTask(TaskDTO taskDTO) {
         String sql = "INSERT INTO tasks (title, description, priority, status, due_date) VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, taskDTO.getTitle());
@@ -37,7 +39,7 @@ public class TaskDAO {
     public boolean updateTask(TaskDTO taskDTO) {
         String sql = "UPDATE tasks SET title = ?, description = ?, priority = ?, status = ?, due_date = ? WHERE id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, taskDTO.getTitle());
@@ -61,7 +63,7 @@ public class TaskDAO {
     public boolean taskExists(int taskId) {
         String sql = "SELECT id FROM tasks WHERE id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, taskId);
@@ -78,7 +80,7 @@ public class TaskDAO {
     public TaskDTO getTaskById(int taskId) {
         String sql = "SELECT * FROM tasks WHERE id = ?";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, taskId);
@@ -107,7 +109,7 @@ public class TaskDAO {
         List<TaskDTO> tasks = new ArrayList<>();
         String sql = "SELECT * FROM tasks ORDER BY created_at DESC";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             
