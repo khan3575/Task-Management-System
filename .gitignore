@@ -1,1 +1,16 @@
-/build/
+# Eclipse metadata
+.classpath
+.project
+.settings/
+.metadata/
+
+# Build folders
+bin/
+target/
+build/
+
+# OS specific
+.DS_Store
+
+# Redundant ignore files
+.ignore
