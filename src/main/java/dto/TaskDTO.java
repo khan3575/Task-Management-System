@@ -67,6 +67,13 @@ public class TaskDTO {
         return dto;
     }
     
+    //mehedi
+    public static TaskDTO forDeleteTask(int id) {
+    		TaskDTO dto = new TaskDTO();
+    		dto.setId(id);
+    		return dto;
+    }
+    
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
