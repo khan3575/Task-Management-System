@@ -104,6 +104,24 @@ public class TaskDAO {
         return null;
     }
     
+    //deleteTask-mehedi
+    public boolean deleteTask(int taskId) {
+        String sql = "DELETE FROM tasks WHERE id = ?";
+ 
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement prepstmt = conn.prepareStatement(sql)) {
+ 
+            prepstmt.setInt(1, taskId);
+            
+            int rowsAffected = prepstmt.executeUpdate();
+            return rowsAffected > 0;
+ 
+        } catch (SQLException e) {
+            System.err.println("TaskDAO: Error deleting task ID " + taskId + " — " + e.getMessage());
+            return false;
+        }
+    }
+    
     // For Dashboard (helping Mahmud)
     public List<TaskDTO> getAllTasks() {
         List<TaskDTO> tasks = new ArrayList<>();
