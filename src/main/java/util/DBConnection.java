@@ -37,20 +37,21 @@ public class DBConnection {
     }
  
    
-    public Connection getConnection() {
-        return connection;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL,USERNAME,PASSWORD);
     }
  
     
-    public void closeConnection() {
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Database connection closed.");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+     // one shared connection causing issues
+//    public void closeConnection() {
+//        if (connection != null) {
+//            try {
+//                connection.close();
+//                System.out.println("Database connection closed.");
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
  
 }
