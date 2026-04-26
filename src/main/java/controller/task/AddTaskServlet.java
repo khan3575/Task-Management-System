@@ -23,7 +23,7 @@ public class AddTaskServlet extends HttpServlet {
         System.out.println("AddTaskServlet initialized");
     }
     
-    // 🔹 GET → Show Add Task Page
+   
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -33,40 +33,37 @@ public class AddTaskServlet extends HttpServlet {
         System.out.println("Session: " + session);
         System.out.println("Username: " + (session != null ? session.getAttribute("username") : "null"));
 
-        // ❌ Not logged in
+        //Not logged in
         if (session == null || session.getAttribute("username") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         
-       // response.getWriter().println("ADD TASK PAGE WORKING");
-
-        
-        // ✅ Show form
+    
         request.getRequestDispatcher("/views/addTask.jsp").forward(request, response);
     }
     
-    // 🔹 POST → Add Task
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
 
-        // ❌ Not logged in
+        // Not logged in
         if (session == null || session.getAttribute("username") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
         
-        // ✅ Get form data
+        // Get form data
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         String priority = request.getParameter("priority");
         String status = request.getParameter("status");
         String dueDate = request.getParameter("dueDate");
         
-        // ✅ Validate
+        // Validate
         String error = taskValidator.validateAdd(title, description, priority, status, dueDate);
         
         if (error != null) {
@@ -80,10 +77,10 @@ public class AddTaskServlet extends HttpServlet {
             return;
         }
         
-        // ✅ Create DTO
+        //Create DTO
         TaskDTO taskDTO = TaskDTO.forAddTask(title, description, priority, status, dueDate);
         
-        // ✅ Call service
+        //Call service
         boolean isAdded = taskService.addTask(taskDTO);
         
         if (isAdded) {
