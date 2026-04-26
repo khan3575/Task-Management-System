@@ -16,7 +16,7 @@ public class LogoutServlet extends HttpServlet {
 	@Override
   	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		System.out.println("inside the logout");
+		
 		
 		if(session != null) session.invalidate();
 		
@@ -25,7 +25,7 @@ public class LogoutServlet extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("inside the logout post");
+		
 		doGet(request, response);
 	}
 
