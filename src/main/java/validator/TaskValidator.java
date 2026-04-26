@@ -60,7 +60,7 @@ public class TaskValidator {
             }
         }
         
-        return null; // No error
+        return null; 
     }
     
     // FAHIM's method: Validate update task input
@@ -119,9 +119,6 @@ public class TaskValidator {
         return null;
     }
     
-    // Team's basic validation method
-    public boolean validateBasic(String input) {
-        return input != null && !input.trim().isEmpty();
-    }
+   
 
 }

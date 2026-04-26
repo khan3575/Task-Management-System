@@ -123,7 +123,7 @@ public class TaskDAO {
         }
     }
     
-    // For Dashboard (helping Mahmud)
+    // For Dashboard 
     public List<TaskDTO> getAllTasks() {
         List<TaskDTO> tasks = new ArrayList<>();
         String sql = "SELECT * FROM tasks ORDER BY created_at DESC";
