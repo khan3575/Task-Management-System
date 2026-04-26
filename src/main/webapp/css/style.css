@@ -372,3 +372,57 @@ tr:hover {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
 }
+
+/* login page section (mehedi)*/
+
+body.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 360px;
+    padding: 20px;
+}
+
+.login-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 32px 28px;
+}
+
+.login-card h2 {
+    font-size: 17px;
+    text-align: center;
+    color: #222;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.login-subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 22px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 4px;
+    font-family: inherit;
+}
+
+.login-btn:hover {
+    background: #555;
+}

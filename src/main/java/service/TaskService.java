@@ -74,21 +74,18 @@ private TaskDAO taskDAO;
         return taskDAO.getTaskById(taskId);
     }
     
-    	//mehedi-deleteTask
-    public boolean deleteTask(int taskId) {
-        if (taskId <= 0) {
-            System.err.println("TaskService: Invalid task ID for deletion: " + taskId);
-            return false;
-        }
- 
-        if (!taskDAO.taskExists(taskId)) {
-            System.err.println("TaskService: Cannot delete. Task ID " + taskId + " does not exist");
-            return false;
-        }
- 
-        System.out.println("TaskService: Deleting task ID " + taskId);
-        return taskDAO.deleteTask(taskId);
-    }
+    	//mehedi-deleteTask 
+	 public boolean deleteTask(TaskDTO taskDTO) {
+	     if (taskDTO == null || taskDTO.getId() <= 0) {
+	         System.err.println("TaskService: Invalid task DTO for deletion");
+	         return false;
+	     }
+	     if (!taskDAO.taskExists(taskDTO.getId())) {
+	         System.err.println("TaskService: Task ID " + taskDTO.getId() + " does not exist");
+	         return false;
+	     }
+	     return taskDAO.deleteTask(taskDTO.getId());
+ 	 }
     
     
     // For Dashboard (helping Mahmud)
