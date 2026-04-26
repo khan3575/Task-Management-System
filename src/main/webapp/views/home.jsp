@@ -8,7 +8,9 @@
 </head>
 <body>
 
+
 	<jsp:include page="fragments/navbar.jsp" />
+
 
     <div class="main-content">
 
