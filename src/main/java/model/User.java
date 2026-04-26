@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class User implements Serializable{
 	
-	
+ 	
 	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String username;
@@ -13,9 +13,9 @@ public class User implements Serializable{
 	private String password;
 	private LocalDateTime createdAt;
 	
-	User()	{	} //no argument constructor to avoid issue.
+	public User()	{	} //no argument constructor to avoid issue.
 
-	User(String username, String email, String password)
+	public User(String username, String email, String password)
 	{
 		this.username = username;
 		this.email = email;

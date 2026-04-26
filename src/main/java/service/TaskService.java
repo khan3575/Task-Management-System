@@ -74,9 +74,26 @@ private TaskDAO taskDAO;
         return taskDAO.getTaskById(taskId);
     }
     
+    	//mehedi-deleteTask 
+	 public boolean deleteTask(TaskDTO taskDTO) {
+	     if (taskDTO == null || taskDTO.getId() <= 0) {
+	         System.err.println("TaskService: Invalid task DTO for deletion");
+	         return false;
+	     }
+	     if (!taskDAO.taskExists(taskDTO.getId())) {
+	         System.err.println("TaskService: Task ID " + taskDTO.getId() + " does not exist");
+	         return false;
+	     }
+	     return taskDAO.deleteTask(taskDTO.getId());
+ 	 }
+    
+    
     // For Dashboard (helping Mahmud)
     public List<TaskDTO> getAllTasks() {
         return taskDAO.getAllTasks();
     }
+    
+    
+    
 
 }
