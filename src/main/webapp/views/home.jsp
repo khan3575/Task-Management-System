@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
+	<%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/sidebar.jsp" %>
 	
 	
 	

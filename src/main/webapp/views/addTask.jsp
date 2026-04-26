@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-     <%--   <%@ include file="../components/navbar.jsp" %>
-    <%@ include file="../components/sidebar.jsp" %> --%>
+     <%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/sidebar.jsp" %>
     
     <div class="main-content">
         <div class="form-container">
