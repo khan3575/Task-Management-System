@@ -9,7 +9,8 @@
 <body>
 
 
-	<jsp:include page="fragments/navbar.jsp" />
+	<jsp:include page="components/navbar.jsp" />
+	<jsp:include page="components/sidebar.jsp" />
 
 
     <div class="main-content">
