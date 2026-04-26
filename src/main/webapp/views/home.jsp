@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
-	
-	
-	
+
+
+	<jsp:include page="fragments/navbar.jsp" />
+
+
     <div class="main-content">
 
         <h2>Welcome, <%= session.getAttribute("username") %></h2>

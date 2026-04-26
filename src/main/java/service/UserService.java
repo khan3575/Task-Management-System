@@ -4,6 +4,7 @@ import dao.UserDAO;
 import dto.UserDTO;
 import model.User;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class UserService {
@@ -44,11 +45,14 @@ public class UserService {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
 
-        String lastLoginDisplay = "Not available";
-        if (user.getCreate_At() != null) {
-            lastLoginDisplay = "Last login: " + user.getCreate_At().format(DISPLAY_FORMAT);
-        }
-        dto.setLastLoginDisplay(lastLoginDisplay);
+//        String lastLoginDisplay = "Not available";
+//        if (user.getCreate_At() != null) {
+//            lastLoginDisplay = "Last login: " + user.getCreate_At().format(DISPLAY_FORMAT);
+//        }
+//        dto.setLastLoginDisplay(lastLoginDisplay);
+        
+        String lastLogin = LocalDateTime.now().format(DISPLAY_FORMAT);
+        dto.setLastLoginDisplay(lastLogin);
 
         return dto;
     }
