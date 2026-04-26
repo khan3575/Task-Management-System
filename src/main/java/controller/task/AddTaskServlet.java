@@ -37,7 +37,7 @@ public class AddTaskServlet extends HttpServlet {
 	        // Check if user is logged in
 	        HttpSession session = request.getSession(false);
 	        if(session == null || session.getAttribute("user") == null) {
-	            response.sendRedirect("login.jsp");
+	            response.sendRedirect("/views/login.jsp");
 	            return;
 	        }
 	        
@@ -55,7 +55,7 @@ public class AddTaskServlet extends HttpServlet {
 	        // STEP 1: Check if user is logged in
 	        HttpSession session = request.getSession(false);
 	        if(session == null || session.getAttribute("user") == null) {
-	            response.sendRedirect("login.jsp");
+	            response.sendRedirect("/views/login.jsp");
 	            return;
 	        }
 	        
