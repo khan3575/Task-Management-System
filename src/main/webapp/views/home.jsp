@@ -15,8 +15,8 @@
 
         <div class="team-section">
             <h3>Our Team</h3>
-
-            <div class="team-grid">
+                    
+                <div class="team-grid">     
 
                 <div class="team-card">
                     <img src="<%= request.getContextPath() %>/images/member-fahim.jpeg" alt="Fahim">
