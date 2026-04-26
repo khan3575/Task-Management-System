@@ -42,6 +42,9 @@ public class LoginServlet extends HttpServlet {
         
         try{
             user = userService.login(username, password);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            
         } catch (Exception e) {
         	
             System.err.println("LoginServlet: unexpected error from UserService — " + e.getMessage());
@@ -57,6 +60,9 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
             return;
         }
+        
+        
+        
         
         
         HttpSession session = request.getSession();

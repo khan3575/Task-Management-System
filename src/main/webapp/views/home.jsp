@@ -9,6 +9,7 @@
 <body>
 	
 	
+	
     <div class="main-content">
 
         <h2>Welcome, <%= session.getAttribute("username") %></h2>
