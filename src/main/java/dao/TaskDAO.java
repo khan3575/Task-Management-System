@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.TaskDTO;
+import model.Task;
 import util.DBConnection;
 
 
@@ -147,6 +148,52 @@ public class TaskDAO {
             e.printStackTrace();
         }
         return tasks;
+    }
+    
+    public List<Task> searchTasks(String column, String value) {
+
+        List<Task> list = new ArrayList<>();
+
+        String sql;
+
+        if (column.equals("id")) {
+            sql = "SELECT * FROM tasks WHERE id = ?";
+        } else if (column.equals("due_date")) {
+            sql = "SELECT * FROM tasks WHERE due_date = ?";
+        } else {
+            sql = "SELECT * FROM tasks WHERE " + column + " LIKE ?";
+        }
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (column.equals("id")) {
+                ps.setInt(1, Integer.parseInt(value));
+            }else if (column.equals("due_date")) {
+                ps.setDate(1, java.sql.Date.valueOf(value)); 
+            } else {
+                ps.setString(1, "%" + value + "%");
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Task task = new Task();
+                task.setId(rs.getInt("id"));
+                task.setTitle(rs.getString("title"));
+                task.setPriority(rs.getString("priority"));
+                task.setStatus(rs.getString("status"));
+                task.setDueDate(rs.getDate("due_date"));
+                task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+
+                list.add(task);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
 }

@@ -11,6 +11,7 @@
     <div class="main-content">
 
         <h2>Welcome, <%= session.getAttribute("username") %></h2>
+        <a href="search.jsp">Search Tasks</a>
         <p class="home-subtitle">Task Management System</p>
 
         <div class="team-section">
