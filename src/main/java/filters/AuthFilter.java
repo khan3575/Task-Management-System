@@ -1,6 +1,5 @@
 package filters;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
@@ -11,48 +10,44 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 
-/**
- * Servlet Filter implementation class Filter
- */
 @WebFilter("/*")
 public class AuthFilter extends HttpFilter implements jakarta.servlet.Filter {
-       
-	/**
-	 * @see AuthFilter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		HttpServletRequest req= (HttpServletRequest) request;
-		HttpServletResponse res= (HttpServletResponse) response;
-		
-		String servletPath = req.getServletPath();
 
-		if (servletPath.startsWith("/login") || servletPath.startsWith("/register")) {
-		    chain.doFilter(request, response);
-		    return;
-		}
-		
-		HttpSession session = req.getSession(false);
-		
-        if (session != null && session.getAttribute("userId") != null) {
-        	// pass the request along the filter chain
-    		chain.doFilter(request, response);
-        }
-        else
-        {
-        	res.sendRedirect("login");
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest  req = (HttpServletRequest)  request;
+        HttpServletResponse res = (HttpServletResponse) response;
+
+        String path = req.getServletPath();
+
+        if (isPublicPath(path)) {
+            chain.doFilter(request, response);
+            return;
         }
 
-	}
+        HttpSession session = req.getSession(false);
+        boolean loggedIn = (session != null && session.getAttribute("userId") != null);
 
-	/**
-	 * @see AuthFilter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
-	}
+        if (loggedIn) {
+            chain.doFilter(request, response);
+        } else {
+            res.sendRedirect(req.getContextPath() + "/login");
+        }
+    }
 
+    private boolean isPublicPath(String path) {
+        return path.equals("/login")
+            || path.equals("/")
+            || path.startsWith("/register")
+            || path.startsWith("/css/")
+            || path.startsWith("/js/")
+            || path.startsWith("/images/");
+    }
+
+    public void init(FilterConfig fConfig) throws ServletException {
+    	
+    }
 }

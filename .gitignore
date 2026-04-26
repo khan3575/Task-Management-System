@@ -3,11 +3,12 @@
 .project
 .settings/
 .metadata/
+*.class
 
 # Build folders
 bin/
 target/
-build/
+/build/
 
 # OS specific
 .DS_Store
