@@ -310,56 +310,6 @@ tr:hover {
     border-left: 4px solid #17a2b8;
 }
 
-/* Team Images Section */
-.team-section {
-    background: white;
-    border-radius: 10px;
-    padding: 30px;
-    margin-top: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.team-card {
-    text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    transition: transform 0.3s;
-}
-
-.team-card:hover {
-    transform: translateY(-5px);
-}
-
-.team-card img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #667eea;
-    margin-bottom: 15px;
-}
-
-.placeholder-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 15px;
-    color: white;
-    font-size: 48px;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
     .sidebar {
@@ -373,7 +323,7 @@ tr:hover {
     }
 }
 
-/* login page section (mehedi)*/
+/*login page*/
 
 body.login-page {
     display: flex;
@@ -425,4 +375,65 @@ body.login-page {
 
 .login-btn:hover {
     background: #555;
+}
+
+/*home page - mehedi*/
+.main-content h2 {
+    font-size: 20px;
+    color: #222;
+    margin-bottom: 4px;
+}
+
+.home-subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 28px;
+}
+
+.team-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.team-section h3 {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+.team-card {
+    text-align: center;
+}
+
+.team-card img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    display: block;
+    margin: 0 auto 10px;
+    background: #f0f0f0;
+}
+
+.member-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 3px;
+}
+
+.member-role {
+    font-size: 12px;
+    color: #888;
 }
