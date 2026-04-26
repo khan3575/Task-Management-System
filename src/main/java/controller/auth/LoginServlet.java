@@ -27,6 +27,8 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+    	
+    	
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
@@ -40,6 +42,9 @@ public class LoginServlet extends HttpServlet {
         
         try{
             user = userService.login(username, password);
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            
         } catch (Exception e) {
         	
             System.err.println("LoginServlet: unexpected error from UserService — " + e.getMessage());
@@ -55,6 +60,9 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
             return;
         }
+        
+        
+        
         
         
         HttpSession session = request.getSession();
