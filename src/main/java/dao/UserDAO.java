@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class UserDAO {
 
     public User findByUsername(String username) {
-        String sql = "SELECT id, username, email, password, created_at FROM users WHERE username = ?";
+        String sql = "SELECT id, username, email, password FROM users WHERE username = ?";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -25,10 +25,12 @@ public class UserDAO {
                     user.setUsername(rs.getString("username"));
                     user.setEmail(rs.getString("email"));
                     user.setPassword(rs.getString("password"));
-
-                    java.sql.Timestamp ts = rs.getTimestamp("created_at");
+                    	
+                     //not need now
+//                    java.sql.Timestamp ts = rs.getTimestamp("created_at");
+//                    
+//                    if (ts != null) user.setCreated_at(ts.toLocalDateTime());
                     
-                    if (ts != null) user.setCreated_at(ts.toLocalDateTime());
                     
                     return user;
                 }
