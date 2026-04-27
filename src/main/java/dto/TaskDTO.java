@@ -1,6 +1,7 @@
 package dto;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class TaskDTO {
     private int id;
@@ -9,12 +10,12 @@ public class TaskDTO {
     private String priority;   
     private String status;     
     private Date dueDate;
-    private String createdAt;
+    private LocalDateTime createdAt;
     
     public TaskDTO() {}
     
     public TaskDTO(int id, String title, String description, String priority, 
-                   String status, Date dueDate, String createdAt) {
+                   String status, Date dueDate, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -44,11 +45,13 @@ public class TaskDTO {
     public Date getDueDate() { return dueDate; }
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
     
-    public String getCreatedAt() { return createdAt; }
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime localDateTime) { this.createdAt = localDateTime; }
     
     @Override
     public String toString() {
         return "TaskDTO [id=" + id + ", title=" + title + ", priority=" + priority + ", status=" + status + "]";
     }
+
+	
 }

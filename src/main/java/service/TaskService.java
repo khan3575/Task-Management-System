@@ -93,7 +93,7 @@ public class TaskService {
 	}
 
 	// search task service
-	public List<Task> searchTasks(String column, String value) {
+	public List<TaskDTO> searchTasks(String column, String value) {
 		Set<String> ALLOWED_COLUMNS = Set.of("id", "title", "priority", "status", "due_date", "created_at");
 
 		if (column == null || value == null || value.trim().isEmpty()) {
