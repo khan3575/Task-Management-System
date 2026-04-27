@@ -1,10 +1,10 @@
 <%@ page import="dto.UserDTO" %>
-
 <%
-	UserDTO currentUser = (UserDTO) session.getAttribute("user");
+	String displayName = (String) session.getAttribute("username");
+    String displayTime = (String) session.getAttribute("lastLogin");
 	
-	String displayName = (currentUser != null) ? currentUser.getUsername() : "Guest";
-	String displayTime = (currentUser != null) ? currentUser.getLastLoginDisplay() : "N/A";
+	if(displayName == null) displayName = "Guest";
+	if(displayTime == null) displayTime = "N/A";
 %>
 
 <div class="navbar">

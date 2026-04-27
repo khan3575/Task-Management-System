@@ -95,7 +95,7 @@ public class TaskDAO {
                 task.setPriority(rs.getString("priority"));
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(rs.getDate("due_date"));
-                task.setCreatedAt(rs.getString("created_at"));
+                task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 return task;
             }
             
@@ -140,7 +140,7 @@ public class TaskDAO {
                 task.setPriority(rs.getString("priority"));
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(rs.getDate("due_date"));
-                task.setCreatedAt(rs.getString("created_at"));
+                task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 tasks.add(task);
             }
             
@@ -150,9 +150,9 @@ public class TaskDAO {
         return tasks;
     }
     
-    public List<Task> searchTasks(String column, String value) {
+    public List<TaskDTO> searchTasks(String column, String value) {
 
-        List<Task> list = new ArrayList<>();
+        List<TaskDTO> list = new ArrayList<>();
 
         String sql;
 
@@ -178,7 +178,7 @@ public class TaskDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Task task = new Task();
+                TaskDTO task = new TaskDTO();
                 task.setId(rs.getInt("id"));
                 task.setTitle(rs.getString("title"));
                 task.setPriority(rs.getString("priority"));
