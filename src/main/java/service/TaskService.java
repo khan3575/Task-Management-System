@@ -11,7 +11,7 @@ import dto.TaskDTO;
 public class TaskService {
     private TaskDAO taskDAO;
 
-    // Constructor - NOW UNCOMMENTED
+    
     public TaskService() { 
         this.taskDAO = new TaskDAO(); 
         System.out.println("TaskService initialized with TaskDAO");
@@ -83,7 +83,7 @@ public class TaskService {
         return taskDAO.deleteTask(id);
     }
 
-    // For Dashboard (helping Mahmud)
+    // For Dashboard 
     public List<TaskDTO> getAllTasks() {
         System.out.println("TaskService: getAllTasks() called");
         return taskDAO.getAllTasks();

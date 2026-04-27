@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import dto.TaskDTO;
-import model.User;
 import service.TaskService;
 
 @WebServlet("/dashboard")
