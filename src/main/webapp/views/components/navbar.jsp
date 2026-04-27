@@ -1,5 +1,6 @@
 <%@ page import="dto.UserDTO" %>
-<%
+<%	
+	Integer displayId = (Integer) session.getAttribute("userId");
 	String displayName = (String) session.getAttribute("username");
     String displayTime = (String) session.getAttribute("lastLogin");
 	
@@ -14,7 +15,8 @@
 			<a href = "#"> Task-Management </a>
 		</div>	
 		<div class="user-info">
-			<span class="username"> <%= displayName %></span>
+			<span class="userId"> User Id: <%= displayId  %> </span>
+			<span class="username">User Name: <%= displayName %></span>
 			<span class ="lastLogin"> Login At: <%= displayTime %></span>
 		</div>
 		
