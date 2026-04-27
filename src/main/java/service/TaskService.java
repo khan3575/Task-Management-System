@@ -1,9 +1,12 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import dao.TaskDAO;
 import dto.TaskDTO;
+import model.Task;
 
 public class TaskService {
 private TaskDAO taskDAO;
@@ -91,6 +94,21 @@ private TaskDAO taskDAO;
     // For Dashboard (helping Mahmud)
     public List<TaskDTO> getAllTasks() {
         return taskDAO.getAllTasks();
+    }
+    
+    // search task service
+    public List<Task> searchTasks(String column, String value) {
+    	Set<String> ALLOWED_COLUMNS = Set.of("id", "title", "priority", "status", "due_date", "created_at");
+
+        if (column == null || value == null || value.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        if (!ALLOWED_COLUMNS.contains(column)) {
+            throw new IllegalArgumentException("Invalid column");
+        }
+
+        return taskDAO.searchTasks(column, value.trim());
     }
     
     

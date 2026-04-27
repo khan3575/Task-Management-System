@@ -11,7 +11,6 @@ public class TaskDTO {
     private Date dueDate;
     private String createdAt;
     
-    
     public TaskDTO() {}
     
     public TaskDTO(int id, String title, String description, String priority, 
