@@ -1,32 +1,37 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, model.Task" %>
-<%@ page import="model.User" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="dto.TaskDTO" %>
+
 <%
-    // Check if user is logged in
     String loggedInUser = (String) session.getAttribute("username");
     if(loggedInUser == null) {
         response.sendRedirect(request.getContextPath() + "/login");
         return;
     }
     
-    List<Task> tasks = (List<Task>) request.getAttribute("tasks");
+    @SuppressWarnings("unchecked")
+    List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
+    
     String searchColumn = request.getParameter("column");
     String searchValue = request.getParameter("value");
+    
+    SimpleDateFormat displayFormat = new SimpleDateFormat("dd/MM/yyyy");
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Search Task - Task Management System</title>
+    <title>Search Task</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
 </head>
 <body>
-    <!-- Include Navbar and Sidebar -->
     <%@ include file="components/navbar.jsp" %>
     <%@ include file="components/sidebar.jsp" %>
     
-    <!-- Main Content -->
     <div class="main-content">
         <div class="search-container">
             <h2>🔍 Search Tasks</h2>
@@ -35,7 +40,7 @@
             <!-- Search Form Card -->
             <div class="search-card">
                 <h3>Search Criteria</h3>
-                <form action="searchTask" method="get" class="search-form">
+                <form action="${pageContext.request.contextPath}/searchTask" method="get" class="search-form">
                     <div class="form-group">
                         <label>Search By:</label>
                         <select name="column">
@@ -56,7 +61,7 @@
                     
                     <div>
                         <button type="submit" class="search-btn">🔍 Search</button>
-                        <a href="searchTask" class="reset-btn">🔄 Reset</a>
+                        <a href="${pageContext.request.contextPath}/searchTask" class="reset-btn">🔄 Reset</a>
                     </div>
                 </form>
             </div>
@@ -78,18 +83,23 @@
                     <tbody>
                         <%
                             if (tasks != null && !tasks.isEmpty()) {
-                                for (Task t : tasks) {
+                                for (TaskDTO task : tasks) { 
+                                    String formattedDueDate = "";
+                                    if(task.getDueDate() != null) {
+                                        java.util.Date utilDate = new java.util.Date(task.getDueDate().getTime());
+                                        formattedDueDate = displayFormat.format(utilDate);
+                                    }
                         %>
                             <tr>
-                                <td><%= t.getId() %></td>
-                                <td><%= t.getTitle() %></td>
-                                <td class="priority-<%= t.getPriority() != null ? t.getPriority().toLowerCase() : "medium" %>">
-                                    <%= t.getPriority() != null ? t.getPriority() : "MEDIUM" %>
+                                <td><%= task.getId() %></td>
+                                <td><%= task.getTitle() %></td>
+                                <td class="priority-<%= task.getPriority() != null ? task.getPriority().toLowerCase() : "medium" %>">
+                                    <%= task.getPriority() != null ? task.getPriority() : "MEDIUM" %>
                                 </td>
-                                <td class="status-<%= t.getStatus() != null ? t.getStatus().toLowerCase().replace("_", "") : "pending" %>">
-                                    <%= t.getStatus() != null ? t.getStatus() : "PENDING" %>
+                                <td class="status-<%= task.getStatus() != null ? task.getStatus().toLowerCase().replace("_", "") : "pending" %>">
+                                    <%= task.getStatus() != null ? task.getStatus() : "PENDING" %>
                                 </td>
-                                <td><%= t.getDueDate() != null ? t.getDueDate() : "-" %></td>
+                                <td><%= formattedDueDate.isEmpty() ? "-" : formattedDueDate %></td>
                             </tr>
                         <%
                                 }

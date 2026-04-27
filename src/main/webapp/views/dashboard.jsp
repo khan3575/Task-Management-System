@@ -4,9 +4,8 @@
 <%@ page import="dto.TaskDTO" %>
 <%@ page import="model.User" %>
 
-
 <%
-    User loggedInUser = (User) session.getAttribute("user");
+    String loggedInUser = (String) session.getAttribute("username");
     if(loggedInUser == null) {
         response.sendRedirect(request.getContextPath() + "/login");
         return;
@@ -51,7 +50,7 @@
         <% } %>
         
         <div class="table-container">
-            <table>
+            <table class="task-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -73,7 +72,6 @@
                                 formattedDueDate = displayFormat.format(utilDate);
                             }
                             
-                            // Fix for LocalDateTime - convert safely
                             String formattedCreatedAt = "";
                             if(task.getCreatedAt() != null) {
                                 formattedCreatedAt = task.getCreatedAt().toString();
@@ -82,28 +80,28 @@
                                 }
                             }
                     %>
-                        <tr>
-                            <td><%= task.getId() %></td>
-                            <td><%= task.getTitle() %></td>
-                            <td><%= task.getDescription() != null ? task.getDescription() : "-" %></td>
-                            <td class="priority-<%= task.getPriority() != null ? task.getPriority().toLowerCase() : "medium" %>">
-                                <%= task.getPriority() != null ? task.getPriority() : "MEDIUM" %>
-                            </td>
-                            <td class="status-<%= task.getStatus() != null ? task.getStatus().toLowerCase().replace("_", "") : "pending" %>">
-                                <%= task.getStatus() != null ? task.getStatus() : "PENDING" %>
-                            </td>
-                            <td><%= formattedDueDate.isEmpty() ? "-" : formattedDueDate %></td>
-                            <td><%= formattedCreatedAt.isEmpty() ? "-" : formattedCreatedAt %></td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/updateTask?id=<%= task.getId() %>" class="btn-edit">Edit</a>
-                                <a href="#" onclick="confirmDelete(<%= task.getId() %>)" class="btn-delete">Delete</a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="task-id"><%= task.getId() %></td>
+                        <td class="task-title"><%= task.getTitle() %></td>
+                        <td class="task-desc"><%= task.getDescription() != null ? task.getDescription() : "-" %></td>
+                        <td class="priority-<%= task.getPriority() != null ? task.getPriority().toLowerCase() : "medium" %>">
+                            <%= task.getPriority() != null ? task.getPriority() : "MEDIUM" %>
+                        </td>
+                        <td class="status-<%= task.getStatus() != null ? task.getStatus().toLowerCase().replace("_", "") : "pending" %>">
+                            <%= task.getStatus() != null ? task.getStatus() : "PENDING" %>
+                        </td>
+                        <td><%= formattedDueDate.isEmpty() ? "-" : formattedDueDate %></td>
+                        <td><%= formattedCreatedAt.isEmpty() ? "-" : formattedCreatedAt %></td>
+                        <td class="action-buttons">
+                            <a href="${pageContext.request.contextPath}/updateTask?id=<%= task.getId() %>" class="btn-edit">Edit</a>
+                            <a href="#" onclick="confirmDelete(<%= task.getId() %>); return false;" class="btn-delete">Delete</a>
+                        </td>
+                    </tr>
                     <% } 
                     } else { %>
-                        <tr>
-                            <td colspan="8">No tasks found</td>
-                        </tr>
+                    <tr>
+                        <td colspan="8" style="text-align: center;">No tasks found</td>
+                    </tr>
                     <% } %>
                 </tbody>
             </table>
@@ -112,16 +110,16 @@
         <% if(tasks != null && !tasks.isEmpty() && totalPages > 1) { %>
             <div class="pagination">
                 <% if(currentPage > 1) { %>
-                    <a href="${pageContext.request.contextPath}/DashboardServlet?page=<%= currentPage - 1 %>">Previous</a>
+                    <a href="${pageContext.request.contextPath}/dashboard?page=<%= currentPage - 1 %>" class="page-link">Previous</a>
                 <% } %>
                 
                 <% for(int i = 1; i <= totalPages; i++) { %>
-                    <a href="${pageContext.request.contextPath}/DashboardServlet?page=<%= i %>" 
-                       class="<%= i == currentPage ? "active" : "" %>"><%= i %></a>
+                    <a href="${pageContext.request.contextPath}/dashboard?page=<%= i %>" 
+                       class="page-link <%= i == currentPage ? "active" : "" %>"><%= i %></a>
                 <% } %>
                 
                 <% if(currentPage < totalPages) { %>
-                    <a href="${pageContext.request.contextPath}/DashboardServlet?page=<%= currentPage + 1 %>">Next</a>
+                    <a href="${pageContext.request.contextPath}/dashboard?page=<%= currentPage + 1 %>" class="page-link">Next</a>
                 <% } %>
             </div>
         <% } %>

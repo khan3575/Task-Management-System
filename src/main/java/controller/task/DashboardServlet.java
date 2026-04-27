@@ -23,6 +23,7 @@ public class DashboardServlet extends HttpServlet {
     @Override
     public void init() {
         taskService = new TaskService();
+        System.out.println("✅ DashboardServlet INITIALIZED - Mapping: /dashboard");
     }
     
     @Override
@@ -31,7 +32,7 @@ public class DashboardServlet extends HttpServlet {
         
         // Check login
         HttpSession session = request.getSession(false);
-        if(session == null || session.getAttribute("user") == null) {
+        if(session == null || session.getAttribute("username") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }

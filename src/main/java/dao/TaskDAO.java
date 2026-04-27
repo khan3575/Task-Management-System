@@ -4,16 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import dto.TaskDTO;
-import model.Task;
 import util.DBConnection;
 
-
 public class TaskDAO {
-	// FAHIM's method: Add a new task to database
+    
+    public TaskDAO() {
+        System.out.println("TaskDAO initialized");
+    }
+    
+    // FAHIM's method: Add a new task to database
     public boolean addTask(TaskDTO taskDTO) {
         String sql = "INSERT INTO tasks (title, description, priority, status, due_date) VALUES (?, ?, ?, ?, ?)";
         
@@ -95,7 +99,12 @@ public class TaskDAO {
                 task.setPriority(rs.getString("priority"));
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(rs.getDate("due_date"));
-                task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                // Convert Timestamp to LocalDateTime
+                if(rs.getTimestamp("created_at") != null) {
+                    task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                } else {
+                    task.setCreatedAt(null);
+                }
                 return task;
             }
             
@@ -105,15 +114,14 @@ public class TaskDAO {
         return null;
     }
     
-    //deleteTask-mehedi
-    public boolean deleteTask(int taskId) {
+    // deleteTask - mehedi
+    public boolean deleteTask(Integer taskId) {
         String sql = "DELETE FROM tasks WHERE id = ?";
  
         try (Connection conn = DBConnection.getInstance().getConnection();
              PreparedStatement prepstmt = conn.prepareStatement(sql)) {
  
             prepstmt.setInt(1, taskId);
-            
             int rowsAffected = prepstmt.executeUpdate();
             return rowsAffected > 0;
  
@@ -123,7 +131,7 @@ public class TaskDAO {
         }
     }
     
-    // For Dashboard 
+    // For Dashboard - getAllTasks
     public List<TaskDTO> getAllTasks() {
         List<TaskDTO> tasks = new ArrayList<>();
         String sql = "SELECT * FROM tasks ORDER BY created_at DESC";
@@ -140,7 +148,12 @@ public class TaskDAO {
                 task.setPriority(rs.getString("priority"));
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(rs.getDate("due_date"));
-                task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                // Convert Timestamp to LocalDateTime
+                if(rs.getTimestamp("created_at") != null) {
+                    task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                } else {
+                    task.setCreatedAt(null);
+                }
                 tasks.add(task);
             }
             
@@ -150,10 +163,9 @@ public class TaskDAO {
         return tasks;
     }
     
+    // Search tasks
     public List<TaskDTO> searchTasks(String column, String value) {
-
         List<TaskDTO> list = new ArrayList<>();
-
         String sql;
 
         if (column.equals("id")) {
@@ -169,7 +181,7 @@ public class TaskDAO {
 
             if (column.equals("id")) {
                 ps.setInt(1, Integer.parseInt(value));
-            }else if (column.equals("due_date")) {
+            } else if (column.equals("due_date")) {
                 ps.setDate(1, java.sql.Date.valueOf(value)); 
             } else {
                 ps.setString(1, "%" + value + "%");
@@ -181,19 +193,22 @@ public class TaskDAO {
                 TaskDTO task = new TaskDTO();
                 task.setId(rs.getInt("id"));
                 task.setTitle(rs.getString("title"));
+                task.setDescription(rs.getString("description"));
                 task.setPriority(rs.getString("priority"));
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(rs.getDate("due_date"));
-                task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-
+                // Convert Timestamp to LocalDateTime
+                if(rs.getTimestamp("created_at") != null) {
+                    task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                } else {
+                    task.setCreatedAt(null);
+                }
                 list.add(task);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return list;
     }
-
 }
