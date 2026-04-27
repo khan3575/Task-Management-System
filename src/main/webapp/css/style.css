@@ -122,7 +122,7 @@ body {
     max-width: 600px;
     background: white;
     border-radius: 10px;
-    padding: 30px;
+    padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -215,7 +215,7 @@ table {
 }
 
 th, td {
-    padding: 12px 15px;
+    padding: 10px 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
