@@ -18,6 +18,7 @@ public class TaskService {
 
 	// FAHIM's method: Add a new task
 	public boolean addTask(String title, String description, String priority, String status, String dueDateStr) {
+		taskDAO = new TaskDAO();
 		TaskDTO dto = new TaskDTO();
 
 		dto.setTitle(title != null ? title.trim() : null);
@@ -44,6 +45,7 @@ public class TaskService {
 	// FAHIM's method: Update an existing task
 	public boolean updateTask(int id, String title, String description, String priority, String status,
 			String dueDateStr) {
+		taskDAO = new TaskDAO();
 		TaskDTO dto = new TaskDTO();
 		dto.setId(id);
 		dto.setTitle(title != null ? title.trim() : null);
@@ -68,6 +70,7 @@ public class TaskService {
 
 	// FAHIM's method: Get task by ID
 	public TaskDTO getTaskById(int taskId) {
+		taskDAO = new TaskDAO();
 		if (taskId <= 0) {
 			return null;
 		}
@@ -76,6 +79,7 @@ public class TaskService {
 
 	// mehedi-deleteTask
 	public boolean deleteTask(int id) {
+		taskDAO = new TaskDAO();
 		if (id < 0) {
 			System.err.println("TaskService: Invalid task DTO for deletion");
 			return false;
@@ -89,11 +93,13 @@ public class TaskService {
 
 	// For Dashboard (helping Mahmud)
 	public List<TaskDTO> getAllTasks() {
+		taskDAO = new TaskDAO();
 		return taskDAO.getAllTasks();
 	}
 
 	// search task service
 	public List<TaskDTO> searchTasks(String column, String value) {
+		taskDAO = new TaskDAO();
 		Set<String> ALLOWED_COLUMNS = Set.of("id", "title", "priority", "status", "due_date", "created_at");
 
 		if (column == null || value == null || value.trim().isEmpty()) {
