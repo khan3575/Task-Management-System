@@ -24,54 +24,6 @@ public class TaskDTO {
         this.createdAt = createdAt;
     }
     
-    // FAHIM's method: Create DTO for adding a new task
-    public static TaskDTO forAddTask(String title, String description, 
-                                      String priority, String status, String dueDateStr) {
-        TaskDTO dto = new TaskDTO();
-        dto.setTitle(title != null ? title.trim() : null);
-        dto.setDescription(description != null ? description.trim() : null);
-        dto.setPriority(priority);
-        dto.setStatus(status);
-        
-        if(dueDateStr != null && !dueDateStr.trim().isEmpty()) {
-            try {
-                dto.setDueDate(Date.valueOf(dueDateStr));
-            } catch (IllegalArgumentException e) {
-                
-                dto.setDueDate(null);
-            }
-        }
-        
-        return dto;
-    }
-    
-    // FAHIM's method: Create DTO for updating a task
-    public static TaskDTO forUpdateTask(int id, String title, String description, 
-                                         String priority, String status, String dueDateStr) {
-        TaskDTO dto = new TaskDTO();
-        dto.setId(id);
-        dto.setTitle(title != null ? title.trim() : null);
-        dto.setDescription(description != null ? description.trim() : null);
-        dto.setPriority(priority);
-        dto.setStatus(status);
-        
-        if(dueDateStr != null && !dueDateStr.trim().isEmpty()) {
-            try {
-                dto.setDueDate(Date.valueOf(dueDateStr));
-            } catch (IllegalArgumentException e) {
-                dto.setDueDate(null);
-            }
-        }
-        
-        return dto;
-    }
-    
-    //mehedi
-    public static TaskDTO forDeleteTask(int id) {
-    		TaskDTO dto = new TaskDTO();
-    		dto.setId(id);
-    		return dto;
-    }
     
     // Getters and Setters
     public int getId() { return id; }
