@@ -80,13 +80,24 @@ body {
 }
 
 .sidebar-nav-links li:hover {
+	display : flex;
+	padding : 0;
+	border-radius: 5px;
+	list-style : none;
+	overflow : hidden;
     background: #667eea;
     color: white;
+    
 }
 
 .sidebar-nav-links a{
 	text-decoration : none;
 	color: white;	
+	display: flex;
+	align-item : center;
+	width : 100%;
+	padding : 20%;
+	
 }
 
 .sidebar-nav-links li{

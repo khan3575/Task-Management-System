@@ -5,7 +5,7 @@
 			<ul>
 				<li> <a href="#" > Dashboard </a> </li>
 				<li> <a href="${pageContext.request.contextPath}/addTask"> Add Task </a> </li>
-				<li> <a href="search" > Search  </a> </li>
+				<li> <a href="${pageContext.request.contextPath}/searchTask" > Search  </a> </li>
 				<li> <a href="${pageContext.request.contextPath}/logout" > Logout </a> </li>
 			</ul>
 		</div>
