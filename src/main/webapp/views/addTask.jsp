@@ -16,11 +16,11 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-	
-    
+
     <div class="main-content">
     <%@ include file="components/navbar.jsp" %>
     <%@ include file="components/sidebar.jsp" %>
+
         <div class="form-container">
             <h2>Add New Task</h2>
             
