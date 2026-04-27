@@ -1,22 +1,21 @@
 <%@ page import="dto.UserDTO" %>
-
 <%
-	UserDTO currentUser = (UserDTO) session.getAttribute("user");
+	String displayName = (String) session.getAttribute("username");
+    String displayTime = (String) session.getAttribute("lastLogin");
 	
-	String displayName = (currentUser != null) ? currentUser.getUsername() : "Guest";
-	String displayTime = (currentUser != null) ? currentUser.getLastLoginDisplay() : "N/A";
+	if(displayName == null) displayName = "Guest";
+	if(displayTime == null) displayTime = "N/A";
 %>
 
 <div class="navbar">
-	<div class = "nav-container"> 
+
 	
 		<div class= "nav-logo">
-			<a href = "#"> Task-Management </a>
+			<h1> Task-Management </h1>
 		</div>	
 		<div class="user-info">
 			<span class="username"> <%= displayName %></span>
 			<span class ="lastLogin"> Login At: <%= displayTime %></span>
 		</div>
 		
-	</div>
 </div>

@@ -18,7 +18,6 @@ public class AddTaskServlet extends HttpServlet {
     
     @Override
     public void init() {
-        taskService = new TaskService();
         taskValidator = new TaskValidator();
         System.out.println("AddTaskServlet initialized");
     }
@@ -77,11 +76,12 @@ public class AddTaskServlet extends HttpServlet {
             return;
         }
         
-        //Create DTO
-        TaskDTO taskDTO = TaskDTO.forAddTask(title, description, priority, status, dueDate);
         
         //Call service
-        boolean isAdded = taskService.addTask(taskDTO);
+        taskService = new TaskService();
+        boolean isAdded = taskService.addTask(title, description, priority, status, dueDate);
+         
+        
         
         if (isAdded) {
             response.sendRedirect(request.getContextPath() + "/home?success=Task added");

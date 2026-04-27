@@ -3,6 +3,8 @@ package controller.task;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
+
+import dto.TaskDTO;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -19,7 +21,7 @@ public class SearchTaskServlet extends HttpServlet{
 		String column = req.getParameter("column");
         String value = req.getParameter("value");
 
-        List<Task> tasks = taskService.searchTasks(column, value);
+        List<TaskDTO> tasks = taskService.searchTasks(column, value);
 
         req.setAttribute("tasks", tasks);
         req.getRequestDispatcher("search.jsp").forward(req, res);
