@@ -16,22 +16,33 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-	<%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/navbar.jsp" %>
     <%@ include file="components/sidebar.jsp" %>
     
     <div class="main-content">
         <div class="form-container">
             <h2>Add New Task</h2>
             
+            <%-- Display error message if any --%>
             <% if(request.getAttribute("error") != null) { %>
                 <div class="error-message">
-                    <%= request.getAttribute("error") %>
+                    ⚠️ <%= request.getAttribute("error") %>
+                </div>
+            <% } %>
+            
+            <%-- Display due date specific warning --%>
+            <% 
+                String dueDateError = (String) request.getAttribute("dueDateError");
+                if(dueDateError != null) { 
+            %>
+                <div class="error-message">
+                    📅 <%= dueDateError %>
                 </div>
             <% } %>
             
             <form action="${pageContext.request.contextPath}/addTask" method="POST">
                 <div class="form-group">
-                    <label>Task Title</label>
+                    <label>Task Title *</label>
                     <input type="text" name="title" required 
                            value="<%= request.getAttribute("title") != null ? request.getAttribute("title") : "" %>">
                 </div>
@@ -62,11 +73,12 @@
                 <div class="form-group">
                     <label>Due Date</label>
                     <input type="date" name="dueDate" value="<%= request.getAttribute("dueDate") != null ? request.getAttribute("dueDate") : "" %>">
+                    <small>Note: Due date cannot be before today's date</small>
                 </div>
                 
                 <div class="form-actions">
                     <button type="submit">Save Task</button>
-                    <a href="${pageContext.request.contextPath}/DashboardServlet">Cancel</a>
+                    <a href="${pageContext.request.contextPath}/dashboard">Cancel</a>
                 </div>
             </form>
         </div>

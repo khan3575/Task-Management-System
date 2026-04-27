@@ -7,6 +7,7 @@ import service.TaskService;
 import validator.TaskValidator;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import dto.TaskDTO;
 
@@ -93,6 +94,28 @@ public class UpdateTaskServlet extends HttpServlet {
             return;
         }
 
+        // ✅ NEW: Due date validation - cannot be before today
+        if(dueDate != null && !dueDate.trim().isEmpty()) {
+            try {
+                LocalDate today = LocalDate.now();
+                LocalDate dueLocalDate = LocalDate.parse(dueDate);
+                
+                if(dueLocalDate.isBefore(today)) {
+                    TaskDTO task = taskService.getTaskById(taskId);
+                    request.setAttribute("task", task);
+                    request.setAttribute("error", "Due date cannot be before today's date!");
+                    request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+                    return;
+                }
+            } catch (Exception e) {
+                TaskDTO task = taskService.getTaskById(taskId);
+                request.setAttribute("task", task);
+                request.setAttribute("error", "Invalid date format. Use YYYY-MM-DD");
+                request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+                return;
+            }
+        }
+
         String error = taskValidator.validateUpdate(title, priority, status, dueDate);
 
         if(error != null) {
@@ -105,13 +128,12 @@ public class UpdateTaskServlet extends HttpServlet {
 
         boolean isUpdated = taskService.updateTask(taskId, title, description, priority, status, dueDate);
 
-
         if(isUpdated) {
             response.sendRedirect(request.getContextPath() + "/dashboard?success=Task updated");
         } else {
             TaskDTO task = taskService.getTaskById(taskId);
             request.setAttribute("task", task);
-            request.setAttribute("error", "Update failed");
+            request.setAttribute("error", "Update failed. Please check your due date (cannot be in the past)");
             request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
         }
     }

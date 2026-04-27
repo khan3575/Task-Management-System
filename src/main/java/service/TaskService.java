@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -17,8 +18,32 @@ public class TaskService {
         System.out.println("TaskService initialized with TaskDAO");
     }
 
+    // Helper method to validate due date (cannot be before current date)
+    private boolean isDueDateValid(String dueDateStr) {
+        if (dueDateStr != null && !dueDateStr.trim().isEmpty()) {
+            try {
+                Date dueDate = Date.valueOf(dueDateStr);
+                LocalDate currentDate = LocalDate.now();
+                LocalDate dueLocalDate = dueDate.toLocalDate();
+                
+                // Return false if due date is before current date
+                return !dueLocalDate.isBefore(currentDate);
+            } catch (IllegalArgumentException e) {
+                return false; // Invalid format
+            }
+        }
+        return true; // No due date provided (optional field)
+    }
+
     // FAHIM's method: Add a new task
     public boolean addTask(String title, String description, String priority, String status, String dueDateStr) {
+        
+        // Validate due date - return false if invalid
+        if (!isDueDateValid(dueDateStr)) {
+            System.err.println("TaskService: Due date cannot be before current date");
+            return false;
+        }
+        
         TaskDTO dto = new TaskDTO();
 
         dto.setTitle(title != null ? title.trim() : null);
@@ -42,6 +67,13 @@ public class TaskService {
     // FAHIM's method: Update an existing task
     public boolean updateTask(int id, String title, String description, String priority, String status,
             String dueDateStr) {
+        
+        // Validate due date - return false if invalid
+        if (!isDueDateValid(dueDateStr)) {
+            System.err.println("TaskService: Due date cannot be before current date");
+            return false;
+        }
+        
         TaskDTO dto = new TaskDTO();
         dto.setId(id);
         dto.setTitle(title != null ? title.trim() : null);
