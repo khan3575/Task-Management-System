@@ -9,10 +9,10 @@
 %>
 
 <div class="navbar">
-	<div class = "nav-container"> 
+
 	
 		<div class= "nav-logo">
-			<a href = "#"> Task-Management </a>
+			<h1> Task-Management </h1>
 		</div>	
 		<div class="user-info">
 			<span class="userId"> User Id: <%= displayId  %> </span>
@@ -20,5 +20,4 @@
 			<span class ="lastLogin"> Login At: <%= displayTime %></span>
 		</div>
 		
-	</div>
 </div>
