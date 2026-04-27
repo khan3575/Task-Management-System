@@ -8,6 +8,11 @@
 </head>
 <body>
 
+
+	<jsp:include page="components/navbar.jsp" />
+	<jsp:include page="components/sidebar.jsp" />
+
+
     <div class="main-content">
 
         <h2>Welcome, <%= session.getAttribute("username") %></h2>
@@ -44,7 +49,7 @@
                 </div>
 
                 <div class="team-card">
-                    <img src="<%= request.getContextPath() %>/images/member.jpeg" alt="Sakib">
+                    <img src="<%= request.getContextPath() %>/images/member-sakib.jpg" alt="Sakib">
                     <p class="member-name">Sakib</p>
                     <p class="member-role">Intern</p>
                 </div>
