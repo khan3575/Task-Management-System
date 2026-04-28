@@ -13,11 +13,8 @@ List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
     <title>Dashboard - Task Management System</title>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style.css">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/dashboard.css">
-    <head>
     
     <script> var contextPath = "<%= request.getContextPath() %>"; </script>
-    <script src="<%= request.getContextPath() %>/js/deleteConfirm.js"></script>
-</head>
 </head>
 <body>
 
@@ -28,6 +25,41 @@ List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
         <h1>Task Dashboard</h1>
 
         <div id="messageBox" class="success-message" style="display:none;"></div>
+
+        <%
+            String successMsg = request.getParameter("success");
+            String errorMsg   = request.getParameter("error");
+            String redirectMessage = null;
+            String redirectMessageType = "success";
+
+            if (successMsg != null && !successMsg.isEmpty()) {
+                redirectMessage = successMsg;
+                redirectMessageType = "success";
+            } else if (errorMsg != null && !errorMsg.isEmpty()) {
+                redirectMessage = errorMsg;
+                redirectMessageType = "error";
+            }
+        %>
+
+    
+        <% if (redirectMessage != null) { %>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const box = document.getElementById("messageBox");
+                    box.textContent = "<%= redirectMessage.replace("\"", "\\\"") %>";
+                    box.className = "<%= redirectMessageType.equals("success") ? "success-message" : "error-message" %>";
+                    box.style.display = "block";
+
+                  
+                    setTimeout(function() {
+                        box.style.display = "none";
+                        const url = new URL(window.location);
+                        url.searchParams.delete('<%= redirectMessageType %>');
+                        window.history.replaceState({}, '', url);
+                    }, 4000);
+                });
+            </script>
+        <% } %>
 
         <table>
             <thead>
@@ -54,7 +86,7 @@ List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
                     <td><%=task.getStatus()%></td>
                     <td><%=task.getDueDate()%></td>
                     <td>
-                        
+                       
                         <a href="<%=request.getContextPath()%>/updateTask?id=<%=task.getId()%>" class="btn edit">Edit</a>
 
                         <button type="button" class="btn delete"
@@ -79,7 +111,6 @@ List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
 
    
     <script>
-    
     async function deleteTask(taskId) {
         if (!confirm("Are you sure you want to delete this task?")) {
             return;
@@ -112,7 +143,6 @@ List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
         box.style.display = "block";
         setTimeout(() => { box.style.display = "none"; }, 4000);
     }
-   
     </script>
 
 </body>
