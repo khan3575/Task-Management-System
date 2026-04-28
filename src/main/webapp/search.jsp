@@ -28,7 +28,10 @@ function handleInputChange() {
     } else if (column === "status") {
         statusInput.style.display = "inline";
         statusInput.disabled = false;
-    } else {
+    } else if (column === "due_date") {
+        dateInput.style.display = "inline";  
+        dateInput.disabled = false;
+	} else {
         textInput.style.display = "inline";
         textInput.disabled = false;
     }
@@ -52,8 +55,6 @@ function handleInputChange() {
 	        <option value="due_date">Due Date</option>
 	        <option value="created_at">Created At</option>
 	    </select>
-	
-	    <input type="text" id="textInput" name="value" placeholder="Enter value">
 	    
 		<select id="priorityInput" name="value" style="display:none;">
 		    <option value="">-- Select Priority --</option>
@@ -68,6 +69,9 @@ function handleInputChange() {
 		    <option value="in_progress">In Progress</option>
 		    <option value="completed">Completed</option>
 		</select>
+		
+		<input type="text" id="textInput" name="value" placeholder="Enter value">
+		<input type="date" id="dateInput" name="value" style="display:none;">
 	    <input type="submit" value="Search">
 	</form>
 	
