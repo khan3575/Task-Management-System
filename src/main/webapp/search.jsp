@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, model.Task" %>
+<%@ page import="java.util.*, dto.TaskDTO" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +9,7 @@
 </head>
 <body>
 	<%
-	    List<Task> tasks = (List<Task>) request.getAttribute("tasks");
+	    List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
 	%>
 
 	<form action="searchTask" method="get">
@@ -42,7 +42,7 @@
 
 	<%
 	    if (tasks != null && !tasks.isEmpty()) {
-	        for (Task t : tasks) {
+	        for (TaskDTO t : tasks) {
 	%>
 	<tr>
 	    <td><%= t.getId() %></td>
