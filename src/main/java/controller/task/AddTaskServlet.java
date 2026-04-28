@@ -84,7 +84,10 @@ public class AddTaskServlet extends HttpServlet {
         
         
         if (isAdded) {
-            response.sendRedirect(request.getContextPath() + "/home?success=Task added");
+        	
+        	// <sakib> changes = context path to addTask and status = success
+        	
+            response.sendRedirect(request.getContextPath() + "/addTask?status=success");
         } else {
             request.setAttribute("error", "Failed to add task");
             request.getRequestDispatcher("/views/addTask.jsp").forward(request, response);

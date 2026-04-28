@@ -20,6 +20,21 @@
     <div class="main-content">
     <%@ include file="components/navbar.jsp" %>
     <%@ include file="components/sidebar.jsp" %>
+    
+    
+    	
+   	 	<!-- adding success or error message  -->
+           <% 
+	    String status = request.getParameter("status");
+		if(status != null) {
+           %>
+		
+		<div id="popup-message" class="popup <%= status.equals("success")? "success" : "error" %> ">
+			<%= status.equals("success") ? "Successfully added a task" : "Failed to add Task" %>
+		</div>
+		<% } %>
+            
+            
 
         <div class="form-container">
             <h2>Add New Task</h2>
@@ -29,6 +44,9 @@
                     <%= request.getAttribute("error") %>
                 </div>
             <% } %>
+            
+            
+            
             
             <form action="${pageContext.request.contextPath}/addTask" method="POST">
                 <div class="form-group">
@@ -67,10 +85,33 @@
                 
                 <div class="form-actions">
                     <button type="submit">Save Task</button>
-                    <a href="${pageContext.request.contextPath}/DashboardServlet">Cancel</a>
+                    <a href="${pageContext.request.contextPath}/home">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
+    
+    
+    <!-- Adding timer to auto clear the status  -->
+    
+    <script>
+    window.onload = function() {
+        const popup = document.getElementById('popup-message');
+
+        if (popup) {
+            setTimeout(function() {
+                popup.style.transition = "opacity 0.5s ease";
+                popup.style.opacity = "0";
+
+                setTimeout(() => popup.remove(), 500);
+
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                window.history.replaceState({}, '', url);
+                
+            }, 3000); 
+        }
+    };
+</script>
 </body>
 </html>
