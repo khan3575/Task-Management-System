@@ -14,10 +14,13 @@ target/
 .DS_Store
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # Web / Server temp files
 Servers/
 .recommenders/
 =======
+=======
+>>>>>>> Stashed changes
 
 # Redundant ignore files
 .ignore

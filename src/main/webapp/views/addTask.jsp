@@ -17,6 +17,11 @@
 </head>
 <body>
 
+<<<<<<< Updated upstream
+=======
+     <%--   <%@ include file="../components/navbar.jsp" %>
+    <%@ include file="../components/sidebar.jsp" %> --%>
+>>>>>>> Stashed changes
     <div class="main-content">
     <%@ include file="components/navbar.jsp" %>
     <%@ include file="components/sidebar.jsp" %>
