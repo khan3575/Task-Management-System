@@ -96,6 +96,12 @@ public class TaskService {
 		taskDAO = new TaskDAO();
 		return taskDAO.getAllTasks();
 	}
+	
+	public int getTaskCount()
+	{
+		taskDAO = new TaskDAO();
+		return taskDAO.getTaskCount();
+	}
 
 	// search task service
 	public List<TaskDTO> searchTasks(String column, String value) {
@@ -111,6 +117,11 @@ public class TaskService {
 		}
 
 		return taskDAO.searchTasks(column, value.trim());
+	}
+	
+	public List<TaskDTO> findPaginated(int page, int size) {
+		taskDAO = new TaskDAO();
+		return taskDAO.findPaginated(page, size);
 	}
 
 }

@@ -1,149 +1,140 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ page import="dto.TaskDTO"%>
 <%@ page import="java.util.List"%>
-
-<%
-List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
-%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard - Task Management System</title>
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style.css">
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/dashboard.css">
-    
-    <script> var contextPath = "<%= request.getContextPath() %>"; </script>
+<meta charset="UTF-8">
+<title>Dashboard - Task Management System</title>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/style.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/dashboard.css">
+<script>
+    var contextPath = "<%=request.getContextPath()%>";
+</script>
 </head>
 <body>
 
-    <%@ include file="components/navbar.jsp"%>
-    <%@ include file="components/sidebar.jsp"%>
+	<%@ include file="components/navbar.jsp"%>
+	<%@ include file="components/sidebar.jsp"%>
 
-    <div class="main-content">
-        <h1>Task Dashboard</h1>
+	<div class="main-content">
+		<h1>Task Dashboard</h1>
 
-        <div id="messageBox" class="success-message" style="display:none;"></div>
+		<div id="messageBox" class="success-message" style="display: none;"></div>
 
-        <%
-            String successMsg = request.getParameter("success");
-            String errorMsg   = request.getParameter("error");
-            String redirectMessage = null;
-            String redirectMessageType = "success";
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Title</th>
+					<th>Description</th>
+					<th>Priority</th>
+					<th>Status</th>
+					<th>Due Date</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody id="taskTableBody">
+				<%-- Empty on load — fetchTasks(1) fills this immediately --%>
+			</tbody>
+		</table>
 
-            if (successMsg != null && !successMsg.isEmpty()) {
-                redirectMessage = successMsg;
-                redirectMessageType = "success";
-            } else if (errorMsg != null && !errorMsg.isEmpty()) {
-                redirectMessage = errorMsg;
-                redirectMessageType = "error";
-            }
-        %>
+		<div id="pagination" class="pagination"></div>
+	</div>
 
-    
-        <% if (redirectMessage != null) { %>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const box = document.getElementById("messageBox");
-                    box.textContent = "<%= redirectMessage.replace("\"", "\\\"") %>";
-                    box.className = "<%= redirectMessageType.equals("success") ? "success-message" : "error-message" %>";
-                    box.style.display = "block";
 
-                  
-                    setTimeout(function() {
-                        box.style.display = "none";
-                        const url = new URL(window.location);
-                        url.searchParams.delete('<%= redirectMessageType %>');
-                        window.history.replaceState({}, '', url);
-                    }, 4000);
-                });
-            </script>
-        <% } %>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Due Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <%
-                if (tasks != null && !tasks.isEmpty()) {
-                    for (TaskDTO task : tasks) {
-                %>
-                <tr id="row-<%=task.getId()%>">
-                    <td><%=task.getId()%></td>
-                    <td><%=task.getTitle()%></td>
-                    <td><%=task.getDescription()%></td>
-                    <td><%=task.getPriority()%></td>
-                    <td><%=task.getStatus()%></td>
-                    <td><%=task.getDueDate()%></td>
-                    <td>
-                       
-                        <a href="<%=request.getContextPath()%>/updateTask?id=<%=task.getId()%>" class="btn edit">Edit</a>
+	<script>
+const API_URL = contextPath + "/dashboard";
 
-                        <button type="button" class="btn delete"
-                                onclick="deleteTask(<%=task.getId()%>)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-                <%
-                    }
-                } else {
-                %>
-                <tr>
-                    <td colspan="7">No tasks available</td>
-                </tr>
-                <%
-                }
-                %>
-            </tbody>
-        </table>
-    </div>
+let state = {
+    currentPage: 1,
+    totalPages: 1
+};
 
-   
-    <script>
-    async function deleteTask(taskId) {
-        if (!confirm("Are you sure you want to delete this task?")) {
-            return;
+function fetchTasks(page) {
+    page = page || 1;
+    fetch(API_URL + "?page=" + page, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(function(res) { return res.text(); })
+    .then(function(html) {
+        document.getElementById("taskTableBody").innerHTML = html;
+
+        var meta = document.getElementById("meta");
+        if (meta) {
+            state.currentPage = parseInt(meta.dataset.page);
+            state.totalPages  = parseInt(meta.dataset.total);
         }
+        renderPagination();
+    })
+    .catch(function(err) { console.error(err); });
+}
 
-        try {
-            const response = await fetch(
-                contextPath + "/deleteTask?id=" + taskId + "&ajax=true",
-                { method: "DELETE" }
-            );
+function renderPagination() {
+    var container = document.getElementById("pagination");
+    container.innerHTML = "";
 
-            if (response.ok) {
-                const row = document.getElementById("row-" + taskId);
-                if (row) row.remove();
-                showMessage("Task deleted successfully", true);
-            } else {
-                const text = await response.text();
-                showMessage(text || "Deletion failed", false);
-            }
-        } catch (error) {
-            console.error("Delete error:", error);
-            showMessage("Network error – please try again", false);
-        }
+    if (state.totalPages <= 1) return;
+
+    var start = Math.max(1, state.currentPage - 2);
+    var end   = Math.min(state.totalPages, state.currentPage + 2);
+
+    if (state.currentPage > 1) {
+        container.innerHTML += '<a onclick="fetchTasks(' + (state.currentPage - 1) + ')">&laquo;</a>';
     }
 
-    function showMessage(message, isSuccess) {
-        const box = document.getElementById("messageBox");
-        box.textContent = message;
-        box.className = isSuccess ? "success-message" : "error-message";
-        box.style.display = "block";
-        setTimeout(() => { box.style.display = "none"; }, 4000);
+    if (start > 1) {
+        container.innerHTML += '<a onclick="fetchTasks(1)">1</a><span>...</span>';
     }
-    </script>
+
+    for (var i = start; i <= end; i++) {
+        var cls = (i === state.currentPage) ? ' class="active"' : '';
+        container.innerHTML += '<a onclick="fetchTasks(' + i + ')"' + cls + '>' + i + '</a>';
+    }
+
+    if (end < state.totalPages) {
+        container.innerHTML += '<span>...</span><a onclick="fetchTasks(' + state.totalPages + ')">' + state.totalPages + '</a>';
+    }
+
+    if (state.currentPage < state.totalPages) {
+        container.innerHTML += '<a onclick="fetchTasks(' + (state.currentPage + 1) + ')">&raquo;</a>';
+    }
+}
+
+async function deleteTask(id) {
+    if (!confirm("Delete this task?")) return;
+    try {
+        var res = await fetch(contextPath + "/deleteTask?id=" + id + "&ajax=true", {
+            method: "DELETE"
+        });
+        if (res.ok) {
+            showMessage("Task deleted", true);
+            fetchTasks(state.currentPage);
+        } else {
+            showMessage("Delete failed", false);
+        }
+    } catch (e) {
+        showMessage("Network error", false);
+    }
+}
+
+function showMessage(msg, success) {
+    var box = document.getElementById("messageBox");
+    box.textContent = msg;
+    box.className   = success ? "success-message" : "error-message";
+    box.style.display = "block";
+    setTimeout(function() { box.style.display = "none"; }, 3000);
+}
+
+// Single entry point — same path for initial load and every page change
+document.addEventListener("DOMContentLoaded", function() {
+    fetchTasks(1);
+});
+</script>
 
 </body>
 </html>

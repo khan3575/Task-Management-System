@@ -17,14 +17,12 @@
 </head>
 <body>
 
-<<<<<<< Updated upstream
-=======
-     <%--   <%@ include file="../components/navbar.jsp" %>
-    <%@ include file="../components/sidebar.jsp" %> --%>
->>>>>>> Stashed changes
+    <%-- <%@ include file="../components/navbar.jsp" %>
+    <%@ include file="../components/sidebar.jsp" %>  --%>
+
     <div class="main-content">
-    <%@ include file="components/navbar.jsp" %>
-    <%@ include file="components/sidebar.jsp" %>
+     <%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/sidebar.jsp" %> 
     
     
     	

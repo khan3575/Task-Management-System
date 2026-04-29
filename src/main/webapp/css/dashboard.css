@@ -6,11 +6,11 @@
     font-size: 14px;
 }
 
-.edit {
+.btn.edit {
     background-color: #28a745;
 }
 
-.delete {
+.btn.delete {
     background-color: #dc3545;
 }
 
