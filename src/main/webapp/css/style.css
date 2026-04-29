@@ -55,6 +55,7 @@ body {
 }
 
 /* Sidebar Styles */
+
 .sidebar {
     position: fixed;
     top: 60px;
@@ -63,50 +64,39 @@ body {
     height: calc(100% - 60px);
     background: white;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    padding: 20px 0;
+    padding: 10px 0;
 }
 
 .sidebar-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     width: 100%;
-    padding: 15px 25px;
-    background: none;
-    border: none;
-    text-align: left;
-    font-size: 16px;
-    cursor: pointer;
+}
+
+.sidebar-nav-links li {
+    width: 100%;
     transition: all 0.3s;
-    color: #555;
-    font-weight: 500;
+    display: flex; 
 }
 
-.sidebar-nav-links li:hover {
-	display : flex;
-	padding : 0;
-	border-radius: 5px;
-	list-style : none;
-	overflow : hidden;
-    background: #667eea;
+.sidebar-nav-links a {
+    text-decoration: none;
     color: white;
-    
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 25px; 
+    transition: inherit;
+}
+.sidebar-nav-links li:hover {
+    background: #667eea;
 }
 
-.sidebar-nav-links a{
-	text-decoration : none;
-	color: white;	
-	display: flex;
-	align-item : center;
-	width : 100%;
-	padding : 20%;
-	
-}
-
-.sidebar-nav-links li{
-	display: flex;
-	padding: 20px;
-	border-radius: 5px;
-	cursor: pointer;
-	text-decoration : none;
-
+.sidebar-nav-links li:hover a {
+    color: white;
 }
 
 
@@ -116,6 +106,32 @@ body {
     margin-top: 60px;
     padding: 30px;
 }
+
+/*  pop up css*/
+
+.popup {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%); 
+        padding: 15px 30px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+        animation: slideDown 0.5s ease-out;
+    }
+
+    .success { background-color: #2ecc71; }
+    .error { background-color: #e74c3c; }
+
+    @keyframes slideDown {
+        from { top: -100px; opacity: 0; }
+        to { top: 20px; opacity: 1; }
+    }
+
+
 
 /* Form Container */
 .form-container {
