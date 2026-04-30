@@ -54,7 +54,6 @@ function handleInputChange() {
 	        <option value="priority">Priority</option>
 	        <option value="status">Status</option>
 	        <option value="due_date">Due Date</option>
-	        <option value="created_at">Created At</option>
 	    </select>
 	    
 		<select id="priorityInput" name="value" style="display:none;">
