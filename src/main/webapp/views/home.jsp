@@ -16,7 +16,6 @@
     <div class="main-content">
 
         <h2>Welcome, <%= session.getAttribute("username") %></h2>
-        
         <p class="home-subtitle">Task Management System</p>
 
         <div class="team-section">
