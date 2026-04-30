@@ -2,17 +2,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.User" %>
 <%@ page import="dto.TaskDTO" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%
-String username = (String) session.getAttribute("username");
-if(username == null) {
-    response.sendRedirect(request.getContextPath() + "/login");
-    return;
-}
+    String username = (String) session.getAttribute("username");
+    if(username == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
     
     TaskDTO task = (TaskDTO) request.getAttribute("task");
     if(task == null) {
-    	response.sendRedirect(request.getContextPath() + "/dashboard?error=Task not found");
-
+        response.sendRedirect(request.getContextPath() + "/dashboard?error=Task not found");
         return;
     }
     
@@ -20,6 +21,9 @@ if(username == null) {
     if(task.getDueDate() != null) {
         dueDateValue = task.getDueDate().toString();
     }
+    
+    // Get today's date for min attribute
+    String todayDate = LocalDate.now().toString();
 %>
 <!DOCTYPE html>
 <html>
@@ -29,7 +33,7 @@ if(username == null) {
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-   <%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/navbar.jsp" %>
     <%@ include file="components/sidebar.jsp" %>
     
     <div class="main-content">
@@ -38,16 +42,22 @@ if(username == null) {
             
             <% if(request.getAttribute("error") != null) { %>
                 <div class="error-message">
-                    <%= request.getAttribute("error") %>
+                    ⚠️ <%= request.getAttribute("error") %>
+                </div>
+            <% } %>
+            
+            <% if(request.getAttribute("dueDateError") != null) { %>
+                <div class="error-message">
+                    📅 <%= request.getAttribute("dueDateError") %>
                 </div>
             <% } %>
             
             <div class="info-note">
-                Note: Task ID and Title cannot be modified
+                ℹ️ Note: Task ID and Title cannot be modified
             </div>
             
-            <form action="${pageContext.request.contextPath}/updateTask" method="POST">
-                <!-- Hidden field to pass task ID -->
+            <form action="${pageContext.request.contextPath}/updateTask" method="POST" onsubmit="return validateDueDate()">
+                <!-- Hidden field to pass task ID and title -->
                 <input type="hidden" name="taskId" value="<%= task.getId() %>">
                 <input type="hidden" name="title" value="<%= task.getTitle() %>">
                 
@@ -88,7 +98,8 @@ if(username == null) {
                 
                 <div class="form-group">
                     <label>Due Date</label>
-                    <input type="date" name="dueDate" value="<%= dueDateValue %>">
+                    <input type="date" name="dueDate" id="dueDate" value="<%= dueDateValue %>" min="<%= todayDate %>">
+                    <small>Note: Due date cannot be before today's date (<%= todayDate %>)</small>
                 </div>
                 
                 <div class="form-group">
@@ -99,10 +110,23 @@ if(username == null) {
                 <div class="form-actions">
                     <button type="submit">Update Task</button>
                     <a href="${pageContext.request.contextPath}/dashboard">Cancel</a>
-
                 </div>
             </form>
         </div>
     </div>
+    
+    <script>
+        function validateDueDate() {
+            var dueDate = document.getElementById("dueDate").value;
+            if (dueDate) {
+                var today = new Date().toISOString().split('T')[0];
+                if (dueDate < today) {
+                    alert("Due date cannot be before today's date!");
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>

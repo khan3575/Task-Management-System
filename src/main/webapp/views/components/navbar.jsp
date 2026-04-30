@@ -12,7 +12,7 @@
 
 	
 		<div class= "nav-logo">
-			<h1> Task-Management </h1>
+			<h1> <a href="${pageContext.request.contextPath}/home" > Task-Management </a> </h1>
 		</div>	
 		<div class="user-info">
 			<span class="userId"> User Id: <%= displayId  %> </span>
