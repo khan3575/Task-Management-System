@@ -13,149 +13,129 @@ import dto.TaskDTO;
 
 @WebServlet("/updateTask")
 public class UpdateTaskServlet extends HttpServlet {
-    
-    private static final long serialVersionUID = 1L;
-    private TaskService taskService;
-    private TaskValidator taskValidator;
-    
-    @Override
-    public void init() {
-        taskService = new TaskService();
-        taskValidator = new TaskValidator();
-        System.out.println("UpdateTaskServlet initialized");
-    }
-    
-    // 🔹 GET → load edit page
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        HttpSession session = request.getSession(false);
 
-        // ✅ FIX 1: session check
-        if(session == null || session.getAttribute("username") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-        
-        String taskIdParam = request.getParameter("id");
+	private static final long serialVersionUID = 1L;
+	private TaskService taskService;
+	private TaskValidator taskValidator;
 
-        if(taskIdParam == null || taskIdParam.trim().isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID");
-            return;
-        }
+	@Override
+	public void init() {
+		taskService = new TaskService();
+		taskValidator = new TaskValidator();
+		System.out.println("UpdateTaskServlet initialized");
+	}
 
-        try {
-            int taskId = Integer.parseInt(taskIdParam);
+	// 🔹 GET → load edit page
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-            TaskDTO task = taskService.getTaskById(taskId);
+		HttpSession session = request.getSession(false);
 
-            if(task == null) {
-                response.sendRedirect(request.getContextPath() + "/dashboard?error=Task not found");
-                return;
-            }
+		// ✅ FIX 1: session check
+		if (session == null || session.getAttribute("username") == null) {
+			response.sendRedirect(request.getContextPath() + "/login");
+			return;
+		}
 
-            request.setAttribute("task", task);
-            request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+		String taskIdParam = request.getParameter("id");
 
-        } catch (NumberFormatException e) {
-            response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID format");
-        }
-    }
-    
-    // 🔹 POST → update task
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
-        System.out.println("UpdateTaskServlet: POST request");
+		if (taskIdParam == null || taskIdParam.trim().isEmpty()) {
+			response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID");
+			return;
+		}
 
-        HttpSession session = request.getSession(false);
+		try {
+			int taskId = Integer.parseInt(taskIdParam);
 
-        // ✅ FIX 2: session check corrected
-        if(session == null || session.getAttribute("username") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+			TaskDTO task = taskService.getTaskById(taskId);
 
-        String taskIdStr = request.getParameter("taskId");
-        String title = request.getParameter("title");
-        String description = request.getParameter("description");
-        String priority = request.getParameter("priority");
-        String status = request.getParameter("status");
-        String dueDate = request.getParameter("dueDate");
+			if (task == null) {
+				response.sendRedirect(request.getContextPath() + "/dashboard?error=Task not found");
+				return;
+			}
 
-        int taskId;
+			request.setAttribute("task", task);
+			request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
 
-        try {
-            taskId = Integer.parseInt(taskIdStr);
-        } catch (Exception e) {
-            response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID");
-            return;
-        }
+		} catch (NumberFormatException e) {
+			response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID format");
+		}
+	}
 
-        // ✅ NEW: Due date validation - cannot be before today
-        if(dueDate != null && !dueDate.trim().isEmpty()) {
-            try {
-                LocalDate today = LocalDate.now();
-                LocalDate dueLocalDate = LocalDate.parse(dueDate);
-                
-                if(dueLocalDate.isBefore(today)) {
-                    TaskDTO task = taskService.getTaskById(taskId);
-                    request.setAttribute("task", task);
-                    request.setAttribute("error", "Due date cannot be before today's date!");
-                    request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
-                    return;
-                }
-            } catch (Exception e) {
-                TaskDTO task = taskService.getTaskById(taskId);
-                request.setAttribute("task", task);
-                request.setAttribute("error", "Invalid date format. Use YYYY-MM-DD");
-                request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
-                return;
-            }
-        }
+	// 🔹 POST → update task
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        String error = taskValidator.validateUpdate(title, priority, status, dueDate);
+		System.out.println("UpdateTaskServlet: POST request");
 
-        if(error != null) {
-            TaskDTO task = taskService.getTaskById(taskId);
-            request.setAttribute("task", task);
-            request.setAttribute("error", error);
-            request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
-            return;
-        }
+		HttpSession session = request.getSession(false);
 
-        boolean isUpdated = taskService.updateTask(taskId, title, description, priority, status, dueDate);
+		// ✅ FIX 2: session check corrected
+		if (session == null || session.getAttribute("username") == null) {
+			response.sendRedirect(request.getContextPath() + "/login");
+			return;
+		}
 
-<<<<<<< Updated upstream
-        if(isUpdated) {
-            response.sendRedirect(request.getContextPath() + "/dashboard?success=Task updated");
-        } else {
-            TaskDTO task = taskService.getTaskById(taskId);
-            request.setAttribute("task", task);
-            request.setAttribute("error", "Update failed. Please check your due date (cannot be in the past)");
-            request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
-=======
+		String taskIdStr = request.getParameter("taskId");
+		String title = request.getParameter("title");
+		String description = request.getParameter("description");
+		String priority = request.getParameter("priority");
+		String status = request.getParameter("status");
+		String dueDate = request.getParameter("dueDate");
 
-        if (isUpdated) {
-            request.setAttribute("success", "Task updated successfully");
-        } else {
-            request.setAttribute("error", "Update failed");
->>>>>>> Stashed changes
-        }
+		int taskId;
 
-        TaskDTO task = taskService.getTaskById(taskId);
-        request.setAttribute("task", task);
+		try {
+			taskId = Integer.parseInt(taskIdStr);
+		} catch (Exception e) {
+			response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID");
+			return;
+		}
 
-        request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
-    }
-<<<<<<< Updated upstream
+		// ✅ NEW: Due date validation - cannot be before today
+		if (dueDate != null && !dueDate.trim().isEmpty()) {
+			try {
+				LocalDate today = LocalDate.now();
+				LocalDate dueLocalDate = LocalDate.parse(dueDate);
+
+				if (dueLocalDate.isBefore(today)) {
+					TaskDTO task = taskService.getTaskById(taskId);
+					request.setAttribute("task", task);
+					request.setAttribute("error", "Due date cannot be before today's date!");
+					request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+					return;
+				}
+			} catch (Exception e) {
+				TaskDTO task = taskService.getTaskById(taskId);
+				request.setAttribute("task", task);
+				request.setAttribute("error", "Invalid date format. Use YYYY-MM-DD");
+				request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+				return;
+			}
+		}
+
+		String error = taskValidator.validateUpdate(title, priority, status, dueDate);
+
+		if (error != null) {
+			TaskDTO task = taskService.getTaskById(taskId);
+			request.setAttribute("task", task);
+			request.setAttribute("error", error);
+			request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+			return;
+		}
+
+		boolean isUpdated = taskService.updateTask(taskId, title, description, priority, status, dueDate);
+
+		if (isUpdated) {
+			request.setAttribute("success", "Task updated successfully");
+		} else {
+			request.setAttribute("error", "Update failed");
+		}
+		TaskDTO task = taskService.getTaskById(taskId);
+		request.setAttribute("task", task);
+
+		request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+	}
 }
-=======
-    
-    
-
-    
-}
->>>>>>> Stashed changes
