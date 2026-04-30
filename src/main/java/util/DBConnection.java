@@ -13,7 +13,7 @@ public class DBConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/task_management_system";
     private static final String USERNAME = "root";
 
-    private static final String PASSWORD = "root1234";
+    private static final String PASSWORD = "root";
  
     private DBConnection() {
         try {

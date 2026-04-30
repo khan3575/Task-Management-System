@@ -150,6 +150,23 @@ public class TaskDAO {
         return tasks;
     }
     
+    public int getTaskCount()
+    {
+    	String sql = "SELECT COUNT(*) FROM tasks";
+
+    	try (Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+    
     public List<TaskDTO> searchTasks(String column, String value) {
 
         List<TaskDTO> list = new ArrayList<>();
@@ -195,5 +212,37 @@ public class TaskDAO {
 
         return list;
     }
+    
+    public List<TaskDTO> findPaginated(int page, int size) {
 
+        List<TaskDTO> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM tasks ORDER BY id DESC LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+        	
+             ps.setInt(1, size);
+             ps.setInt(2, (page - 1) * size);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                TaskDTO task = new TaskDTO();
+                task.setId(rs.getInt("id"));
+                task.setTitle(rs.getString("title"));
+                task.setDescription(rs.getString("description"));
+                task.setPriority(rs.getString("priority"));
+                task.setStatus(rs.getString("status"));
+                task.setDueDate(rs.getDate("due_date"));
+
+                list.add(task);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }
