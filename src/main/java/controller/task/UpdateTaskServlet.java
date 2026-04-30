@@ -128,6 +128,7 @@ public class UpdateTaskServlet extends HttpServlet {
 
         boolean isUpdated = taskService.updateTask(taskId, title, description, priority, status, dueDate);
 
+<<<<<<< Updated upstream
         if(isUpdated) {
             response.sendRedirect(request.getContextPath() + "/dashboard?success=Task updated");
         } else {
@@ -135,6 +136,26 @@ public class UpdateTaskServlet extends HttpServlet {
             request.setAttribute("task", task);
             request.setAttribute("error", "Update failed. Please check your due date (cannot be in the past)");
             request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+=======
+
+        if (isUpdated) {
+            request.setAttribute("success", "Task updated successfully");
+        } else {
+            request.setAttribute("error", "Update failed");
+>>>>>>> Stashed changes
         }
+
+        TaskDTO task = taskService.getTaskById(taskId);
+        request.setAttribute("task", task);
+
+        request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
     }
+<<<<<<< Updated upstream
 }
+=======
+    
+    
+
+    
+}
+>>>>>>> Stashed changes

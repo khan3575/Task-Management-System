@@ -24,7 +24,8 @@ if (tasks != null && !tasks.isEmpty()) {
     <td><%=task.getStatus()%></td>
     <td><%=task.getDueDate()%></td>
     <td>
-        <a href="updateTask?id=<%=task.getId()%>" class="btn edit">Edit</a>
+        <%-- <a href="updateTask?id=<%=task.getId()%>" class="btn edit">Edit</a> --%>
+        <button onclick="updateTask(<%=task.getId()%>)" class="btn edit">Update</button>
         <button onclick="deleteTask(<%=task.getId()%>)" class="btn delete">Delete</button>
     </td>
 </tr>

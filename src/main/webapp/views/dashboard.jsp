@@ -11,9 +11,11 @@
 	href="<%=request.getContextPath()%>/css/style.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/dashboard.css">
-<script>
-    var contextPath = "<%=request.getContextPath()%>";
-</script>
+	
+<script src="${pageContext.request.contextPath}/js/showMessage.js"></script>
+<script src="${pageContext.request.contextPath}/js/pagination.js"></script>
+<script> var contextPath = "<%=request.getContextPath()%>"; </script>
+
 </head>
 <body>
 
@@ -74,36 +76,6 @@ function fetchTasks(page) {
     .catch(function(err) { console.error(err); });
 }
 
-function renderPagination() {
-    var container = document.getElementById("pagination");
-    container.innerHTML = "";
-
-    if (state.totalPages <= 1) return;
-
-    var start = Math.max(1, state.currentPage - 2);
-    var end   = Math.min(state.totalPages, state.currentPage + 2);
-
-    if (state.currentPage > 1) {
-        container.innerHTML += '<a onclick="fetchTasks(' + (state.currentPage - 1) + ')">&laquo;</a>';
-    }
-
-    if (start > 1) {
-        container.innerHTML += '<a onclick="fetchTasks(1)">1</a><span>...</span>';
-    }
-
-    for (var i = start; i <= end; i++) {
-        var cls = (i === state.currentPage) ? ' class="active"' : '';
-        container.innerHTML += '<a onclick="fetchTasks(' + i + ')"' + cls + '>' + i + '</a>';
-    }
-
-    if (end < state.totalPages) {
-        container.innerHTML += '<span>...</span><a onclick="fetchTasks(' + state.totalPages + ')">' + state.totalPages + '</a>';
-    }
-
-    if (state.currentPage < state.totalPages) {
-        container.innerHTML += '<a onclick="fetchTasks(' + (state.currentPage + 1) + ')">&raquo;</a>';
-    }
-}
 
 async function deleteTask(id) {
     if (!confirm("Delete this task?")) return;
@@ -118,19 +90,17 @@ async function deleteTask(id) {
             showMessage("Delete failed", false);
         }
     } catch (e) {
-        showMessage("Network error", false);
+        showMessage("Network Error, Delete Failed", false);
     }
 }
 
-function showMessage(msg, success) {
-    var box = document.getElementById("messageBox");
-    box.textContent = msg;
-    box.className   = success ? "success-message" : "error-message";
-    box.style.display = "block";
-    setTimeout(function() { box.style.display = "none"; }, 3000);
+function updateTask(id) {
+    if (!confirm("Do you want to update this task?")) return;
+
+    window.location.href = contextPath + "/updateTask?id=" + id;
 }
 
-// Single entry point — same path for initial load and every page change
+// For initial load
 document.addEventListener("DOMContentLoaded", function() {
     fetchTasks(1);
 });
