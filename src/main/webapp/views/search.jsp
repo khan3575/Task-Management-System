@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Search Task</title>
+ <link rel="stylesheet" href="<%= request.getContextPath() %>/css/search.css">
 <script>
 function handleInputChange() {
     const column = document.getElementById("column").value;

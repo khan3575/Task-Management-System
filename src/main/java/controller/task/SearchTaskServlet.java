@@ -24,7 +24,7 @@ public class SearchTaskServlet extends HttpServlet{
         List<TaskDTO> tasks = taskService.searchTasks(column, value);
 
         req.setAttribute("tasks", tasks);
-        req.getRequestDispatcher("search.jsp").forward(req, res);
+        req.getRequestDispatcher("/views/search.jsp").forward(req, res);
     }
 
 }
