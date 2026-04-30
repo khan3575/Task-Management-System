@@ -129,7 +129,7 @@ public class UpdateTaskServlet extends HttpServlet {
         boolean isUpdated = taskService.updateTask(taskId, title, description, priority, status, dueDate);
 
         if(isUpdated) {
-            response.sendRedirect(request.getContextPath() + "/dashboard?success=Task updated");
+        	response.sendRedirect(request.getContextPath() + "/dashboard?updated=true");
         } else {
             TaskDTO task = taskService.getTaskById(taskId);
             request.setAttribute("task", task);
