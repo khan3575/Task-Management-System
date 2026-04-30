@@ -1,136 +1,140 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="dto.TaskDTO" %>
-<%@ page import="model.User" %>
-
-<%
-    String loggedInUser = (String) session.getAttribute("username");
-    if(loggedInUser == null) {
-        response.sendRedirect(request.getContextPath() + "/login");
-        return;
-    }
-    
-    @SuppressWarnings("unchecked")
-    List<TaskDTO> tasks = (List<TaskDTO>) request.getAttribute("tasks");
-    
-    Integer currentPage = (Integer) request.getAttribute("currentPage");
-    Integer totalPages = (Integer) request.getAttribute("totalPages");
-    Integer totalTasks = (Integer) request.getAttribute("totalTasks");
-    
-    if(currentPage == null) currentPage = 1;
-    if(totalPages == null) totalPages = 1;
-    if(totalTasks == null) totalTasks = 0;
-    
-    SimpleDateFormat displayFormat = new SimpleDateFormat("dd/MM/yyyy");
-%>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="dto.TaskDTO"%>
+<%@ page import="java.util.List"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
+<meta charset="UTF-8">
+<title>Dashboard - Task Management System</title>
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/style.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/dashboard.css">
+<script>
+    var contextPath = "<%=request.getContextPath()%>";
+</script>
 </head>
 <body>
-    <%@ include file="components/navbar.jsp" %>
-    <%@ include file="components/sidebar.jsp" %>
-    
-    <div class="main-content">
-        <h2>Task Dashboard</h2>
-        
-        <!-- Success/Error Messages -->
-        <% if(request.getParameter("success") != null) { %>
-            <div class="success-message"><%= request.getParameter("success") %></div>
-        <% } %>
-        <% if(request.getParameter("error") != null) { %>
-            <div class="error-message"><%= request.getParameter("error") %></div>
-        <% } %>
-        
-        <div class="table-container">
-            <table class="task-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Due Date</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if(tasks != null && !tasks.isEmpty()) { 
-                        for(TaskDTO task : tasks) { 
-                            String formattedDueDate = "";
-                            if(task.getDueDate() != null) {
-                                java.util.Date utilDate = new java.util.Date(task.getDueDate().getTime());
-                                formattedDueDate = displayFormat.format(utilDate);
-                            }
-                            
-                            String formattedCreatedAt = "";
-                            if(task.getCreatedAt() != null) {
-                                formattedCreatedAt = task.getCreatedAt().toString();
-                                if(formattedCreatedAt.length() > 10) {
-                                    formattedCreatedAt = formattedCreatedAt.substring(0, 10);
-                                }
-                            }
-                    %>
-                    <tr>
-                        <td class="task-id"><%= task.getId() %></td>
-                        <td class="task-title"><%= task.getTitle() %></td>
-                        <td class="task-desc"><%= task.getDescription() != null ? task.getDescription() : "-" %></td>
-                        <td class="priority-<%= task.getPriority() != null ? task.getPriority().toLowerCase() : "medium" %>">
-                            <%= task.getPriority() != null ? task.getPriority() : "MEDIUM" %>
-                        </td>
-                        <td class="status-<%= task.getStatus() != null ? task.getStatus().toLowerCase().replace("_", "") : "pending" %>">
-                            <%= task.getStatus() != null ? task.getStatus() : "PENDING" %>
-                        </td>
-                        <td><%= formattedDueDate.isEmpty() ? "-" : formattedDueDate %></td>
-                        <td><%= formattedCreatedAt.isEmpty() ? "-" : formattedCreatedAt %></td>
-                        <td class="action-buttons">
-                            <a href="${pageContext.request.contextPath}/updateTask?id=<%= task.getId() %>" class="btn-edit">Edit</a>
-                            <a href="#" onclick="confirmDelete(<%= task.getId() %>); return false;" class="btn-delete">Delete</a>
-                        </td>
-                    </tr>
-                    <% } 
-                    } else { %>
-                    <tr>
-                        <td colspan="8" style="text-align: center;">No tasks found</td>
-                    </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
-        
-        <% if(tasks != null && !tasks.isEmpty() && totalPages > 1) { %>
-            <div class="pagination">
-                <% if(currentPage > 1) { %>
-                    <a href="${pageContext.request.contextPath}/dashboard?page=<%= currentPage - 1 %>" class="page-link">Previous</a>
-                <% } %>
-                
-                <% for(int i = 1; i <= totalPages; i++) { %>
-                    <a href="${pageContext.request.contextPath}/dashboard?page=<%= i %>" 
-                       class="page-link <%= i == currentPage ? "active" : "" %>"><%= i %></a>
-                <% } %>
-                
-                <% if(currentPage < totalPages) { %>
-                    <a href="${pageContext.request.contextPath}/dashboard?page=<%= currentPage + 1 %>" class="page-link">Next</a>
-                <% } %>
-            </div>
-        <% } %>
-    </div>
-    
-    <script>
-        function confirmDelete(taskId) {
-            if(confirm("Are you sure you want to delete this task?")) {
-                window.location.href = "${pageContext.request.contextPath}/deleteTask?id=" + taskId;
-            }
+
+	<%@ include file="components/navbar.jsp"%>
+	<%@ include file="components/sidebar.jsp"%>
+
+	<div class="main-content">
+		<h1>Task Dashboard</h1>
+
+		<div id="messageBox" class="success-message" style="display: none;"></div>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Title</th>
+					<th>Description</th>
+					<th>Priority</th>
+					<th>Status</th>
+					<th>Due Date</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody id="taskTableBody">
+				<%-- Empty on load — fetchTasks(1) fills this immediately --%>
+			</tbody>
+		</table>
+
+		<div id="pagination" class="pagination"></div>
+	</div>
+
+
+
+	<script>
+const API_URL = contextPath + "/dashboard";
+
+let state = {
+    currentPage: 1,
+    totalPages: 1
+};
+
+function fetchTasks(page) {
+    page = page || 1;
+    fetch(API_URL + "?page=" + page, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(function(res) { return res.text(); })
+    .then(function(html) {
+        document.getElementById("taskTableBody").innerHTML = html;
+
+        var meta = document.getElementById("meta");
+        if (meta) {
+            state.currentPage = parseInt(meta.dataset.page);
+            state.totalPages  = parseInt(meta.dataset.total);
         }
-    </script>
+        renderPagination();
+    })
+    .catch(function(err) { console.error(err); });
+}
+
+function renderPagination() {
+    var container = document.getElementById("pagination");
+    container.innerHTML = "";
+
+    if (state.totalPages <= 1) return;
+
+    var start = Math.max(1, state.currentPage - 2);
+    var end   = Math.min(state.totalPages, state.currentPage + 2);
+
+    if (state.currentPage > 1) {
+        container.innerHTML += '<a onclick="fetchTasks(' + (state.currentPage - 1) + ')">&laquo;</a>';
+    }
+
+    if (start > 1) {
+        container.innerHTML += '<a onclick="fetchTasks(1)">1</a><span>...</span>';
+    }
+
+    for (var i = start; i <= end; i++) {
+        var cls = (i === state.currentPage) ? ' class="active"' : '';
+        container.innerHTML += '<a onclick="fetchTasks(' + i + ')"' + cls + '>' + i + '</a>';
+    }
+
+    if (end < state.totalPages) {
+        container.innerHTML += '<span>...</span><a onclick="fetchTasks(' + state.totalPages + ')">' + state.totalPages + '</a>';
+    }
+
+    if (state.currentPage < state.totalPages) {
+        container.innerHTML += '<a onclick="fetchTasks(' + (state.currentPage + 1) + ')">&raquo;</a>';
+    }
+}
+
+async function deleteTask(id) {
+    if (!confirm("Delete this task?")) return;
+    try {
+        var res = await fetch(contextPath + "/deleteTask?id=" + id + "&ajax=true", {
+            method: "DELETE"
+        });
+        if (res.ok) {
+            showMessage("Task deleted", true);
+            fetchTasks(state.currentPage);
+        } else {
+            showMessage("Delete failed", false);
+        }
+    } catch (e) {
+        showMessage("Network error", false);
+    }
+}
+
+function showMessage(msg, success) {
+    var box = document.getElementById("messageBox");
+    box.textContent = msg;
+    box.className   = success ? "success-message" : "error-message";
+    box.style.display = "block";
+    setTimeout(function() { box.style.display = "none"; }, 3000);
+}
+
+// Single entry point — same path for initial load and every page change
+document.addEventListener("DOMContentLoaded", function() {
+    fetchTasks(1);
+});
+</script>
+
 </body>
 </html>
