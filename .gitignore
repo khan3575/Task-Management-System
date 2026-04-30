@@ -13,6 +13,16 @@ target/
 # OS specific
 .DS_Store
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # Web / Server temp files
 Servers/
 .recommenders/
+=======
+=======
+>>>>>>> Stashed changes
+
+# Redundant ignore files
+.ignore
+>>>>>>> c1ca7a29c6cba67fc34c08060caa3e189f48c7d5
+>>>>>>> Stashed changes

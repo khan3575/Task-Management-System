@@ -16,33 +16,44 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-    <%@ include file="components/navbar.jsp" %>
-    <%@ include file="components/sidebar.jsp" %>
-    
+
+    <%-- <%@ include file="../components/navbar.jsp" %>
+    <%@ include file="../components/sidebar.jsp" %>  --%>
+
     <div class="main-content">
+     <%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/sidebar.jsp" %> 
+    
+    
+    	
+   	 	<!-- adding success or error message  -->
+           <% 
+	    String status = request.getParameter("status");
+		if(status != null) {
+           %>
+		
+		<div id="popup-message" class="popup <%= status.equals("success")? "success" : "error" %> ">
+			<%= status.equals("success") ? "Successfully added a task" : "Failed to add Task" %>
+		</div>
+		<% } %>
+            
+            
+
         <div class="form-container">
             <h2>Add New Task</h2>
             
-            <%-- Display error message if any --%>
             <% if(request.getAttribute("error") != null) { %>
                 <div class="error-message">
-                    ⚠️ <%= request.getAttribute("error") %>
+                    <%= request.getAttribute("error") %>
                 </div>
             <% } %>
             
-            <%-- Display due date specific warning --%>
-            <% 
-                String dueDateError = (String) request.getAttribute("dueDateError");
-                if(dueDateError != null) { 
-            %>
-                <div class="error-message">
-                    📅 <%= dueDateError %>
-                </div>
-            <% } %>
+            
+            
             
             <form action="${pageContext.request.contextPath}/addTask" method="POST">
                 <div class="form-group">
-                    <label>Task Title *</label>
+                    <label>Task Title</label>
                     <input type="text" name="title" required 
                            value="<%= request.getAttribute("title") != null ? request.getAttribute("title") : "" %>">
                 </div>
@@ -73,15 +84,37 @@
                 <div class="form-group">
                     <label>Due Date</label>
                     <input type="date" name="dueDate" value="<%= request.getAttribute("dueDate") != null ? request.getAttribute("dueDate") : "" %>">
-                    <small>Note: Due date cannot be before today's date</small>
                 </div>
                 
                 <div class="form-actions">
                     <button type="submit">Save Task</button>
-                    <a href="${pageContext.request.contextPath}/dashboard">Cancel</a>
+                    <a href="${pageContext.request.contextPath}/home">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
+    
+    
+    <!-- Adding timer to auto clear the status  -->
+    
+    <script>
+    window.onload = function() {
+        const popup = document.getElementById('popup-message');
+
+        if (popup) {
+            setTimeout(function() {
+                popup.style.transition = "opacity 0.5s ease";
+                popup.style.opacity = "0";
+
+                setTimeout(() => popup.remove(), 500);
+
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                window.history.replaceState({}, '', url);
+                
+            }, 3000); 
+        }
+    };
+</script>
 </body>
 </html>
