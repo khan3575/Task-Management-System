@@ -139,7 +139,7 @@ function updateTask(id) {
 
     window.location.href = contextPath + "/updateTask?id=" + id;
         showMessage("Network error occurred. Please try again.", false);
-    }
+    
 }
 
 // Function to show update success (call this from edit page or after redirect)
