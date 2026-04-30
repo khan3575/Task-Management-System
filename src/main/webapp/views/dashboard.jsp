@@ -45,8 +45,6 @@
 		<div id="pagination" class="pagination"></div>
 	</div>
 
-
-
 	<script>
 const API_URL = contextPath + "/dashboard";
 
@@ -54,6 +52,48 @@ let state = {
     currentPage: 1,
     totalPages: 1
 };
+
+// Show message in the messageBox container
+function showMessage(msg, isSuccess) {
+    var box = document.getElementById("messageBox");
+    box.textContent = msg;
+    box.className = isSuccess ? "success-message" : "error-message";
+    box.style.display = "block";
+    
+    // Auto hide after 3 seconds
+    setTimeout(function() { 
+        box.style.display = "none"; 
+    }, 3000);
+}
+
+// Check URL for status messages (for task update, delete, add)
+function checkUrlForMessages() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const error = urlParams.get('error');
+    const updated = urlParams.get('updated');
+    const deleted = urlParams.get('deleted');
+    const added = urlParams.get('added');
+    
+    if (success) {
+        showMessage(success, true);
+        // Remove the parameter without refreshing
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    } else if (error) {
+        showMessage(error, false);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (updated) {
+        showMessage('Task has been updated successfully!', true);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (deleted) {
+        showMessage('Task has been deleted successfully!', true);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (added) {
+        showMessage('New task has been added successfully!', true);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
 
 function fetchTasks(page) {
     page = page || 1;
@@ -112,28 +152,36 @@ async function deleteTask(id) {
             method: "DELETE"
         });
         if (res.ok) {
-            showMessage("Task deleted", true);
+            showMessage("Task deleted successfully!", true);
             fetchTasks(state.currentPage);
         } else {
-            showMessage("Delete failed", false);
+            showMessage("Failed to delete task. Please try again.", false);
         }
     } catch (e) {
-        showMessage("Network error", false);
+        showMessage("Network error occurred. Please try again.", false);
     }
 }
 
-function showMessage(msg, success) {
-    var box = document.getElementById("messageBox");
-    box.textContent = msg;
-    box.className   = success ? "success-message" : "error-message";
-    box.style.display = "block";
-    setTimeout(function() { box.style.display = "none"; }, 3000);
+// Function to show update success (call this from edit page or after redirect)
+function showUpdateSuccess() {
+    showMessage("Task has been updated successfully!", true);
+}
+
+function showUpdateError(message) {
+    showMessage(message || "Failed to update task. Please try again.", false);
 }
 
 // Single entry point — same path for initial load and every page change
 document.addEventListener("DOMContentLoaded", function() {
     fetchTasks(1);
+    checkUrlForMessages(); // Check for any status messages in URL
 });
+
+// Expose functions globally
+window.deleteTask = deleteTask;
+window.fetchTasks = fetchTasks;
+window.showUpdateSuccess = showUpdateSuccess;
+window.showUpdateError = showUpdateError;
 </script>
 
 </body>
