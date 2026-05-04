@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import service.TaskService;
+import util.AppLogger;
 import validator.TaskValidator;
 
 import java.io.IOException;
@@ -129,6 +130,14 @@ public class UpdateTaskServlet extends HttpServlet {
 		boolean isUpdated = taskService.updateTask(taskId, title, description, priority, status, dueDate);
 
 		if (isUpdated) {
+			String path = request.getServletContext().getRealPath("/logs/app.log");
+            AppLogger.log(
+                        path,
+                        "TASK UPDATED",
+                        "A task updated",
+                        (String)session.getAttribute("username"),
+                        "title= taskId: "+taskId
+            );
 			request.setAttribute("success", "Task updated successfully");
 		} else {
 			request.setAttribute("error", "Update failed");

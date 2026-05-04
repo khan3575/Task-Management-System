@@ -9,6 +9,7 @@ import jakarta.servlet.http.*;
 
 import dto.TaskDTO;
 import service.TaskService;
+import util.AppLogger;
 import validator.TaskValidator;
 
 @WebServlet("/addTask")
@@ -113,6 +114,15 @@ public class AddTaskServlet extends HttpServlet {
         boolean isAdded = taskService.addTask(title, description, priority, status, dueDate);
          
         if (isAdded) {
+        	
+        	String path = request.getServletContext().getRealPath("/logs/app.log");
+            AppLogger.log(
+                        path,
+                        "TASK ADDED",
+                        "A new task added",
+                        (String)session.getAttribute("username"),
+                        "title= "
+            );
             // <sakib> changes = context path to addTask and status = success
             response.sendRedirect(request.getContextPath() + "/addTask?status=success");
         } else {

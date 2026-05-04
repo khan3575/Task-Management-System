@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import dto.UserDTO;
 import service.UserService;
+import util.AppLogger;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -20,7 +21,6 @@ public class LoginServlet extends HttpServlet {
 	public void init() {
 		userService = new UserService();
 	}
-	
 	
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -61,11 +61,19 @@ public class LoginServlet extends HttpServlet {
         }
         
      
-        
         HttpSession session = request.getSession();
         session.setAttribute("userId", user.getId());
         session.setAttribute("username", user.getUsername());
         session.setAttribute("lastLogin", user.getLastLoginDisplay());
+        
+        String path = request.getServletContext().getRealPath("/logs/app.log");
+        AppLogger.log(
+                    path,
+                    "LOGIN",
+                    "User Logged in",
+                    (String)session.getAttribute("username"),
+                    "title= "
+        );
         
         response.sendRedirect(request.getContextPath()+"/home");
     }

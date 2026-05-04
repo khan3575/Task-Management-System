@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import service.TaskService;
+import util.AppLogger;
 
 import java.io.IOException;
 
@@ -58,6 +59,14 @@ public class DeleteTaskServlet extends HttpServlet {
             boolean deleted = taskService.deleteTask(taskId);
 
             if (deleted) {
+            	String path = request.getServletContext().getRealPath("/logs/app.log");
+                AppLogger.log(
+                            path,
+                            "TASK DELETED",
+                            "A task deleted",
+                            (String)session.getAttribute("username"),
+                            "title= taskId: "+ taskId
+                );
                 sendResult(request, response, true, "Task deleted successfully");
             } else {
                 sendResult(request, response, false, "Deletion failed");
