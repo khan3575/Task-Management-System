@@ -14,4 +14,12 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+    
+    
+    <resource-ref>
+    <description>Task DB</description>
+    <res-ref-name>jdbc/TaskDB</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+    </resource-ref>
 </web-app>

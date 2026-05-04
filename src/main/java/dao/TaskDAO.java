@@ -17,7 +17,7 @@ public class TaskDAO {
     public boolean addTask(TaskDTO taskDTO) {
         String sql = "INSERT INTO tasks (title, description, priority, status, due_date) VALUES (?, ?, ?, ?, ?)";
         
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, taskDTO.getTitle());
@@ -40,7 +40,7 @@ public class TaskDAO {
     public boolean updateTask(TaskDTO taskDTO) {
         String sql = "UPDATE tasks SET title = ?, description = ?, priority = ?, status = ?, due_date = ? WHERE id = ?";
         
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setString(1, taskDTO.getTitle());
@@ -64,7 +64,7 @@ public class TaskDAO {
     public boolean taskExists(int taskId) {
         String sql = "SELECT id FROM tasks WHERE id = ?";
         
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, taskId);
@@ -81,7 +81,7 @@ public class TaskDAO {
     public TaskDTO getTaskById(int taskId) {
         String sql = "SELECT * FROM tasks WHERE id = ?";
         
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, taskId);
@@ -109,7 +109,7 @@ public class TaskDAO {
     public boolean deleteTask(int taskId) {
         String sql = "DELETE FROM tasks WHERE id = ?";
  
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement prepstmt = conn.prepareStatement(sql)) {
  
             prepstmt.setInt(1, taskId);
@@ -128,7 +128,7 @@ public class TaskDAO {
         List<TaskDTO> tasks = new ArrayList<>();
         String sql = "SELECT * FROM tasks ORDER BY created_at DESC";
         
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             
@@ -154,7 +154,7 @@ public class TaskDAO {
     {
     	String sql = "SELECT COUNT(*) FROM tasks";
 
-    	try (Connection conn = DBConnection.getInstance().getConnection();
+    	try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 ResultSet rs = pstmt.executeQuery()) {
 
@@ -181,7 +181,7 @@ public class TaskDAO {
             sql = "SELECT * FROM tasks WHERE " + column + " LIKE ?";
         }
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             if (column.equals("id")) {
@@ -219,7 +219,7 @@ public class TaskDAO {
 
         String sql = "SELECT * FROM tasks ORDER BY id DESC LIMIT ? OFFSET ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
         	
              ps.setInt(1, size);
