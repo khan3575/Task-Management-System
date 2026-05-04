@@ -138,7 +138,7 @@ function updateTask(id) {
     if (!confirm("Do you want to update this task?")) return;
 
     window.location.href = contextPath + "/updateTask?id=" + id;
-        showMessage("Network error occurred. Please try again.", false);
+        //showMessage("Network error occurred. Please try again.", false);
     
 }
 
