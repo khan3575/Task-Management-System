@@ -30,7 +30,10 @@ if (task.getDueDate() != null) {
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/style.css">
 	<script src="${pageContext.request.contextPath}/js/showMessage.js"></script>
+<<<<<<< Updated upstream
 	
+=======
+>>>>>>> Stashed changes
 </head>
 <body>
 	<%@ include file="components/navbar.jsp"%>
@@ -131,4 +134,5 @@ if (task.getDueDate() != null) {
 		</div>
 	</div>
 </body>
+
 </html>

@@ -138,6 +138,7 @@ function updateTask(id) {
     if (!confirm("Do you want to update this task?")) return;
 
     window.location.href = contextPath + "/updateTask?id=" + id;
+<<<<<<< Updated upstream
         //showMessage("Network error occurred. Please try again.", false);
     
 }
@@ -152,6 +153,10 @@ function showUpdateError(message) {
 
 }
 
+=======
+}
+
+>>>>>>> Stashed changes
 // For initial load
 document.addEventListener("DOMContentLoaded", function() {
     fetchTasks(1);
