@@ -152,22 +152,3 @@ public class UpdateTaskServlet extends HttpServlet {
     }
 
 
-<<<<<<< Updated upstream
-=======
-        if (isUpdated) {
-            request.setAttribute("success", "Task updated successfully");
-        } else {
-            request.setAttribute("error", "Update failed");
-        }
-
-        TaskDTO task = taskService.getTaskById(taskId);
-        request.setAttribute("task", task);
-
-        request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
-    }
-    
-    
-
-    
-}
->>>>>>> Stashed changes
