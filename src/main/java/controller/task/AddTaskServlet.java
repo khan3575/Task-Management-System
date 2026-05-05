@@ -132,6 +132,15 @@ public class AddTaskServlet extends HttpServlet {
             request.setAttribute("priority", priority);
             request.setAttribute("status", status);
             request.setAttribute("dueDate", dueDate);
+            String path = request.getServletContext().getRealPath("/logs/app.log");
+            AppLogger.log(
+                        path,
+                        "TASK ADDED FAILED",
+                        "A attempt of new task add but failed",
+                        (String)session.getAttribute("username"),
+                        "title= "+ error
+            );
+            
             request.getRequestDispatcher("/views/addTask.jsp").forward(request, response);
         }
     }

@@ -69,10 +69,26 @@ public class DeleteTaskServlet extends HttpServlet {
                 );
                 sendResult(request, response, true, "Task deleted successfully");
             } else {
+            	String path = request.getServletContext().getRealPath("/logs/app.log");
+                AppLogger.log(
+                            path,
+                            "TASK DELETE FAILED",
+                            "A attempt of task deletion failed",
+                            (String)session.getAttribute("username"),
+                            "title= " + taskId
+                );
                 sendResult(request, response, false, "Deletion failed");
             }
 
         } catch (NumberFormatException e) {
+        	String path = request.getServletContext().getRealPath("/logs/app.log");
+            AppLogger.log(
+                        path,
+                        "TASK DELETE FAILED",
+                        "A attempt of task deletion failed",
+                        (String)session.getAttribute("username"),
+                        "title= "+ e
+            );
             sendResult(request, response, false, "Invalid task ID format");
         }
     }

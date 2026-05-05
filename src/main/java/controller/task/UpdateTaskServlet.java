@@ -26,14 +26,12 @@ public class UpdateTaskServlet extends HttpServlet {
 		System.out.println("UpdateTaskServlet initialized");
 	}
 
-	// 🔹 GET → load edit page
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession(false);
 
-		// ✅ FIX 1: session check
 		if (session == null || session.getAttribute("username") == null) {
 			response.sendRedirect(request.getContextPath() + "/login");
 			return;
@@ -60,11 +58,18 @@ public class UpdateTaskServlet extends HttpServlet {
 			request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
 
 		} catch (NumberFormatException e) {
+			String path = request.getServletContext().getRealPath("/logs/app.log");
+            AppLogger.log(
+                        path,
+                        "TASK UPDATE FAILED",
+                        "A attempt of task update but failed",
+                        (String)session.getAttribute("username"),
+                        "title= "+ e
+            );
 			response.sendRedirect(request.getContextPath() + "/dashboard?error=Invalid task ID format");
 		}
 	}
 
-	// 🔹 POST → update task
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -73,7 +78,6 @@ public class UpdateTaskServlet extends HttpServlet {
 
 		HttpSession session = request.getSession(false);
 
-		// ✅ FIX 2: session check corrected
 		if (session == null || session.getAttribute("username") == null) {
 			response.sendRedirect(request.getContextPath() + "/login");
 			return;
@@ -95,7 +99,6 @@ public class UpdateTaskServlet extends HttpServlet {
 			return;
 		}
 
-		// ✅ NEW: Due date validation - cannot be before today
 		if (dueDate != null && !dueDate.trim().isEmpty()) {
 			try {
 				LocalDate today = LocalDate.now();
@@ -112,6 +115,16 @@ public class UpdateTaskServlet extends HttpServlet {
 				TaskDTO task = taskService.getTaskById(taskId);
 				request.setAttribute("task", task);
 				request.setAttribute("error", "Invalid date format. Use YYYY-MM-DD");
+				
+				String path = request.getServletContext().getRealPath("/logs/app.log");
+	            AppLogger.log(
+	                        path,
+	                        "TASK UPDATE FAILED",
+	                        "A attempt of task update but failed",
+	                        (String)session.getAttribute("username"),
+	                        "title= "+ e
+	            );
+	            
 				request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
 				return;
 			}
@@ -140,6 +153,16 @@ public class UpdateTaskServlet extends HttpServlet {
             );
 			request.setAttribute("success", "Task updated successfully");
 		} else {
+			
+			String path = request.getServletContext().getRealPath("/logs/app.log");
+            AppLogger.log(
+                        path,
+                        "TASK UPDATE FAILED",
+                        "A attempt of task update but failed",
+                        (String)session.getAttribute("username"),
+                        "title= "+ taskId
+            );
+            
 			request.setAttribute("error", "Update failed");
 		}
 		TaskDTO task = taskService.getTaskById(taskId);
