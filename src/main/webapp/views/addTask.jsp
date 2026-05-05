@@ -1,4 +1,3 @@
-<%-- File: webapp/views/addTask.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.User" %>
 <%
@@ -17,11 +16,11 @@
 </head>
 <body>
 
-    
+    <%@ include file="components/navbar.jsp" %>
+    <%@ include file="components/sidebar.jsp" %> 
 
     <div class="main-content">
-     <%@ include file="components/navbar.jsp" %>
-    <%@ include file="components/sidebar.jsp" %> 
+    
     
     
     	

@@ -1,132 +1,124 @@
 package validator;
 
+import java.time.LocalDate;
+
 public class TaskValidator {
-	// FAHIM's method: Validate add task input
-	public String validateAdd(String title, String description, String priority, String status, String dueDate) {
 
-		// Validate Title (required, min 3 chars, max 100 chars)
-		if (title == null || title.trim().isEmpty()) {
-			return "Task title is required";
-		}
-		if (title.trim().length() < 3) {
-			return "Task title must be at least 3 characters";
-		}
-		if (title.trim().length() > 100) {
-			return "Task title must not exceed 100 characters";
-		}
+    private static final String[] PRIORITIES = {"LOW", "MEDIUM", "HIGH"};
+    private static final String[] STATUSES = {"PENDING", "IN_PROGRESS", "COMPLETED"};
 
-		// Validate Priority (must be valid value)
-		if (priority == null || priority.trim().isEmpty()) {
-			return "Priority is required";
-		}
-		String[] validPriorities = { "LOW", "MEDIUM", "HIGH" };
-		boolean validPriority = false;
-		for (String p : validPriorities) {
-			if (p.equals(priority)) {
-				validPriority = true;
-				break;
-			}
-		}
-		if (!validPriority) {
-			return "Invalid priority value. Must be LOW, MEDIUM, or HIGH";
-		}
+    // ================= ADD TASK =================
+    public String validateAdd(String title, String description, String priority, String status, String dueDate) {
 
-		// Validate Status (must be valid value)
-		if (status == null || status.trim().isEmpty()) {
-			return "Status is required";
-		}
-		String[] validStatuses = { "PENDING", "IN_PROGRESS", "COMPLETED" };
-		boolean validStatus = false;
-		for (String s : validStatuses) {
-			if (s.equals(status)) {
-				validStatus = true;
-				break;
-			}
-		}
-		if (!validStatus) {
-			return "Invalid status value. Must be PENDING, IN_PROGRESS, or COMPLETED";
-		}
+        String error;
 
-		// Validate Description (optional, but max 1000 chars)
-		if (description != null && description.length() > 1000) {
-			return "Description must not exceed 1000 characters";
-		}
+        error = validateTitle(title);
+        if (error != null) return error;
 
-		// Validate Due Date (optional, but if provided must be valid)
-		if (dueDate != null && !dueDate.trim().isEmpty()) {
-			if (!dueDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-				return "Invalid date format. Use YYYY-MM-DD";
-			}
-		}
+        error = validatePriority(priority);
+        if (error != null) return error;
 
-		return null;
-	}
+        error = validateStatus(status);
+        if (error != null) return error;
 
-	// FAHIM's method: Validate update task input
-	public String validateUpdate(String title, String priority, String status, String dueDate) {
+        error = validateDescription(description);
+        if (error != null) return error;
 
-		// Validate Title (even though it's disabled in form)
-		if (title == null || title.trim().isEmpty()) {
-			return "Task title is required";
-		}
-		if (title.trim().length() < 3) {
-			return "Task title must be at least 3 characters";
-		}
-		if (title.trim().length() > 100) {
-			return "Task title must not exceed 100 characters";
-		}
+        error = validateDueDateFormat(dueDate);
+        if (error != null) return error;
 
-		// Validate Priority
-		if (priority == null || priority.trim().isEmpty()) {
-			return "Priority is required";
-		}
-		String[] validPriorities = { "LOW", "MEDIUM", "HIGH" };
-		boolean validPriority = false;
-		for (String p : validPriorities) {
-			if (p.equals(priority)) {
-				validPriority = true;
-				break;
-			}
-		}
-		if (!validPriority) {
-			return "Invalid priority value. Must be LOW, MEDIUM, or HIGH";
-		}
+        return null;
+    }
 
-		// Validate Status
-		if (status == null || status.trim().isEmpty()) {
-			return "Status is required";
-		}
-		String[] validStatuses = { "PENDING", "IN_PROGRESS", "COMPLETED" };
-		boolean validStatus = false;
-		for (String s : validStatuses) {
-			if (s.equals(status)) {
-				validStatus = true;
-				break;
-			}
-		}
-		if (!validStatus) {
-			return "Invalid status value. Must be PENDING, IN_PROGRESS, or COMPLETED";
-		}
+    // ================= UPDATE TASK =================
+    public String validateUpdate(String title, String priority, String status, String dueDate) {
 
-		// Validate Due Date (optional)
-		if (dueDate != null && !dueDate.trim().isEmpty()) {
-			if (!dueDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-				return "Invalid date format. Use YYYY-MM-DD";
-			}
+        String error;
 
-			// Check if due date is before today
-			try {
-				java.time.LocalDate dueLocalDate = java.time.LocalDate.parse(dueDate);
-				java.time.LocalDate today = java.time.LocalDate.now();
-				if (dueLocalDate.isBefore(today)) {
-					return "Due date cannot be before today's date";
-				}
-			} catch (Exception e) {
-				return "Invalid date format. Use YYYY-MM-DD";
-			}
-		}
+        error = validateTitle(title);
+        if (error != null) return error;
 
-		return null; // No error
-	}
+        error = validatePriority(priority);
+        if (error != null) return error;
 
+        error = validateStatus(status);
+        if (error != null) return error;
+
+        error = validateDueDateFull(dueDate);
+        if (error != null) return error;
+
+        return null;
+    }
+
+    // ================= COMMON METHODS =================
+
+    private String validateTitle(String title) {
+        if (title == null || title.trim().isEmpty())
+            return "Task title is required";
+
+        if (title.trim().length() < 3)
+            return "Task title must be at least 3 characters";
+
+        if (title.trim().length() > 100)
+            return "Task title must not exceed 100 characters";
+
+        return null;
+    }
+
+    private String validatePriority(String priority) {
+        if (priority == null || priority.trim().isEmpty())
+            return "Priority is required";
+
+        for (String p : PRIORITIES) {
+            if (p.equals(priority)) return null;
+        }
+
+        return "Invalid priority value. Must be LOW, MEDIUM, or HIGH";
+    }
+
+    private String validateStatus(String status) {
+        if (status == null || status.trim().isEmpty())
+            return "Status is required";
+
+        for (String s : STATUSES) {
+            if (s.equals(status)) return null;
+        }
+
+        return "Invalid status value. Must be PENDING, IN_PROGRESS, or COMPLETED";
+    }
+
+    private String validateDescription(String description) {
+        if (description != null && description.length() > 1000)
+            return "Description must not exceed 1000 characters";
+
+        return null;
+    }
+
+    private String validateDueDateFormat(String dueDate) {
+        if (dueDate != null && !dueDate.trim().isEmpty()) {
+            if (!dueDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                return "Invalid date format. Use YYYY-MM-DD";
+            }
+        }
+        return null;
+    }
+
+    private String validateDueDateFull(String dueDate) {
+        if (dueDate != null && !dueDate.trim().isEmpty()) {
+
+            if (!dueDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                return "Invalid date format. Use YYYY-MM-DD";
+            }
+
+            try {
+                LocalDate date = LocalDate.parse(dueDate);
+                if (date.isBefore(LocalDate.now())) {
+                    return "Due date cannot be before today's date";
+                }
+            } catch (Exception e) {
+                return "Invalid date format. Use YYYY-MM-DD";
+            }
+        }
+        return null;
+    }
 }

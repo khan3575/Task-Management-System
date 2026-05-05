@@ -11,7 +11,7 @@
 	href="<%=request.getContextPath()%>/css/style.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/dashboard.css">
-	
+
 <script src="${pageContext.request.contextPath}/js/showMessage.js"></script>
 <script src="${pageContext.request.contextPath}/js/pagination.js"></script>
 <script> var contextPath = "<%=request.getContextPath()%>"; </script>
@@ -138,7 +138,7 @@ function updateTask(id) {
     if (!confirm("Do you want to update this task?")) return;
 
     window.location.href = contextPath + "/updateTask?id=" + id;
-        showMessage("Network error occurred. Please try again.", false);
+        //showMessage("Network error occurred. Please try again.", false);
     
 }
 

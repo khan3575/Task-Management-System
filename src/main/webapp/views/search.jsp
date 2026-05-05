@@ -7,7 +7,7 @@
     <title>Search Tasks</title>
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/search-style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/search.css">
     
     <script>
         var contextPath = "<%= request.getContextPath() %>";

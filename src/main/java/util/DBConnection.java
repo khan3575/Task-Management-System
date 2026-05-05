@@ -1,58 +1,59 @@
 package util;
- 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
- 
-public class DBConnection {
- 
-    private static volatile DBConnection instance;
- 
-    private Connection connection;
- 
-    private static final String URL = "jdbc:mysql://localhost:3306/task_management_system";
-    private static final String USERNAME = "root";
 
-    private static final String PASSWORD = "root";
- 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class DBConnection {
+
+    private static final Logger logger = LogManager.getLogger(DBConnection.class);
+
+    private static DBConnection instance;
+    private DataSource dataSource;
+
     private DBConnection() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Database created and connected.");
-            
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Database connection failed");
-            throw new RuntimeException(e);
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:comp/env");
+
+            dataSource = (DataSource) envContext.lookup("jdbc/TaskDB");
+
+            logger.info("JNDI DataSource initialized successfully");
+
+        } catch (NamingException e) {
+            logger.fatal("JNDI lookup failed for jdbc/TaskDB", e);
+            throw new RuntimeException("JNDI DataSource initialization failed", e);
         }
     }
- 
-   
+
     public static DBConnection getInstance() {
         if (instance == null) {
             synchronized (DBConnection.class) {
-                if (instance == null) instance = new DBConnection();
+                if (instance == null) {
+                    instance = new DBConnection();
+                }
             }
         }
         return instance;
     }
- 
-   
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL,USERNAME,PASSWORD);
+
+    public Connection getConnection() {
+        try {
+            Connection conn = dataSource.getConnection();
+            logger.debug("Database connection retrieved from pool");
+            return conn;
+
+        } catch (SQLException e) {
+            logger.error("Failed to get DB connection from pool", e);
+            throw new RuntimeException("Failed to get DB connection", e);
+        }
     }
- 
-    
-     // one shared connection causing issues
-//    public void closeConnection() {
-//        if (connection != null) {
-//            try {
-//                connection.close();
-//                System.out.println("Database connection closed.");
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
- 
 }

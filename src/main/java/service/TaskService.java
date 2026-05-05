@@ -9,119 +9,161 @@ import dao.TaskDAO;
 import dto.TaskDTO;
 import model.Task;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class TaskService {
-	private TaskDAO taskDAO;
 
-	/*
-	 * public TaskService() { this.taskDAO = new TaskDAO(); }
-	 */
+    private static final Logger logger = LogManager.getLogger(TaskService.class);
 
-	// FAHIM's method: Add a new task
-	public boolean addTask(String title, String description, String priority, String status, String dueDateStr) {
-		taskDAO = new TaskDAO();
-		TaskDTO dto = new TaskDTO();
+    private TaskDAO taskDAO;
 
-		dto.setTitle(title != null ? title.trim() : null);
-		dto.setDescription(description != null ? description.trim() : null);
-		dto.setPriority(priority != null ? priority : "MEDIUM");
-		dto.setStatus(status != null ? status : "PENDING");
+    public boolean addTask(String title, String description, String priority, String status, String dueDateStr) {
+        taskDAO = new TaskDAO();
+        TaskDTO dto = new TaskDTO();
 
-		if (dueDateStr != null && !dueDateStr.trim().isEmpty()) {
-			try {
-				dto.setDueDate(Date.valueOf(dueDateStr));
-			} catch (IllegalArgumentException e) {
+        dto.setTitle(title != null ? title.trim() : null);
+        dto.setDescription(description != null ? description.trim() : null);
+        dto.setPriority(priority != null ? priority : "MEDIUM");
+        dto.setStatus(status != null ? status : "PENDING");
 
-				dto.setDueDate(null);
-			}
-		}
+        if (dueDateStr != null && !dueDateStr.trim().isEmpty()) {
+            try {
+                dto.setDueDate(Date.valueOf(dueDateStr));
+            } catch (IllegalArgumentException e) {
+                logger.warn("Invalid due date format: {}", dueDateStr);
+                dto.setDueDate(null);
+            }
+        }
 
-		System.out.println("TaskService: Adding task - " + dto.getTitle());
+        logger.info("Adding task with title: {}", dto.getTitle());
 
-		// Call DAO to insert
+        try {
+            boolean result = taskDAO.addTask(dto);
+            logger.info("Task add result: {}", result);
+            return result;
+        } catch (Exception e) {
+            logger.error("Error while adding task", e);
+            return false;
+        }
+    }
 
-		return taskDAO.addTask(dto);
-	}
+    public boolean updateTask(int id, String title, String description, String priority, String status,
+                             String dueDateStr) {
 
-	// FAHIM's method: Update an existing task
-	public boolean updateTask(int id, String title, String description, String priority, String status,
-			String dueDateStr) {
-		taskDAO = new TaskDAO();
-		TaskDTO dto = new TaskDTO();
-		dto.setId(id);
-		dto.setTitle(title != null ? title.trim() : null);
-		dto.setDescription(description != null ? description.trim() : null);
-		dto.setPriority(priority != null ? priority : "MEDIUM");
-		dto.setStatus(status != null ? status : "PENDING");
+        taskDAO = new TaskDAO();
+        TaskDTO dto = new TaskDTO();
 
-		if (dueDateStr != null && !dueDateStr.trim().isEmpty()) {
-			try {
-				dto.setDueDate(Date.valueOf(dueDateStr));
-			} catch (IllegalArgumentException e) {
-				dto.setDueDate(null);
+        dto.setId(id);
+        dto.setTitle(title != null ? title.trim() : null);
+        dto.setDescription(description != null ? description.trim() : null);
+        dto.setPriority(priority != null ? priority : "MEDIUM");
+        dto.setStatus(status != null ? status : "PENDING");
 
-			}
-		}
+        if (dueDateStr != null && !dueDateStr.trim().isEmpty()) {
+            try {
+                dto.setDueDate(Date.valueOf(dueDateStr));
+            } catch (IllegalArgumentException e) {
+                logger.warn("Invalid due date format: {}", dueDateStr);
+                dto.setDueDate(null);
+            }
+        }
 
-		System.out.println("TaskService: Updating task - ID: " + dto.getId() + ", Title: " + dto.getTitle());
+        logger.info("Updating task ID: {}, Title: {}", dto.getId(), dto.getTitle());
 
-		// Call DAO to update
-		return taskDAO.updateTask(dto);
-	}
+        try {
+            boolean result = taskDAO.updateTask(dto);
+            logger.info("Task update result for ID {}: {}", id, result);
+            return result;
+        } catch (Exception e) {
+            logger.error("Error while updating task ID {}", id, e);
+            return false;
+        }
+    }
 
-	// FAHIM's method: Get task by ID
-	public TaskDTO getTaskById(int taskId) {
-		taskDAO = new TaskDAO();
-		if (taskId <= 0) {
-			return null;
-		}
-		return taskDAO.getTaskById(taskId);
-	}
+    public TaskDTO getTaskById(int taskId) {
+        taskDAO = new TaskDAO();
 
-	// mehedi-deleteTask
-	public boolean deleteTask(int id) {
-		taskDAO = new TaskDAO();
-		if (id < 0) {
-			System.err.println("TaskService: Invalid task DTO for deletion");
-			return false;
-		}
-		if (!taskDAO.taskExists(id)) {
-			System.err.println("TaskService: Task ID " + id + " does not exist");
-			return false;
-		}
-		return taskDAO.deleteTask(id);
-	}
+        if (taskId <= 0) {
+            logger.warn("Invalid task ID requested: {}", taskId);
+            return null;
+        }
 
-	// For Dashboard (helping Mahmud)
-	public List<TaskDTO> getAllTasks() {
-		taskDAO = new TaskDAO();
-		return taskDAO.getAllTasks();
-	}
-	
-	public int getTaskCount()
-	{
-		taskDAO = new TaskDAO();
-		return taskDAO.getTaskCount();
-	}
+        logger.debug("Fetching task by ID: {}", taskId);
 
-	// search task service
-	public List<TaskDTO> searchTasks(String column, String value) {
-		taskDAO = new TaskDAO();
-		Set<String> ALLOWED_COLUMNS = Set.of("id", "title", "priority", "status", "due_date", "created_at");
+        return taskDAO.getTaskById(taskId);
+    }
 
-		if (column == null || value == null || value.trim().isEmpty()) {
-			return new ArrayList<>();
-		}
+    public boolean deleteTask(int id) {
+        taskDAO = new TaskDAO();
 
-		if (!ALLOWED_COLUMNS.contains(column)) {
-			throw new IllegalArgumentException("Invalid column");
-		}
+        if (id < 0) {
+            logger.warn("Invalid task ID for deletion: {}", id);
+            return false;
+        }
 
-		return taskDAO.searchTasks(column, value.trim());
-	}
-	
-	public List<TaskDTO> findPaginated(int page, int size) {
-		taskDAO = new TaskDAO();
-		return taskDAO.findPaginated(page, size);
-	}
+        if (!taskDAO.taskExists(id)) {
+            logger.warn("Task ID {} does not exist", id);
+            return false;
+        }
 
+        logger.info("Deleting task ID: {}", id);
+
+        try {
+            boolean result = taskDAO.deleteTask(id);
+            logger.info("Task delete result for ID {}: {}", id, result);
+            return result;
+        } catch (Exception e) {
+            logger.error("Error while deleting task ID {}", id, e);
+            return false;
+        }
+    }
+
+    public List<TaskDTO> getAllTasks() {
+        taskDAO = new TaskDAO();
+        logger.debug("Fetching all tasks");
+        return taskDAO.getAllTasks();
+    }
+
+    public int getTaskCount() {
+        taskDAO = new TaskDAO();
+        logger.debug("Fetching task count");
+        return taskDAO.getTaskCount();
+    }
+
+    public List<TaskDTO> searchTasks(String column, String value) {
+        taskDAO = new TaskDAO();
+
+        Set<String> ALLOWED_COLUMNS = Set.of("id", "title", "priority", "status", "due_date", "created_at");
+
+        if (column == null || value == null || value.trim().isEmpty()) {
+            logger.warn("Search called with invalid input - column: {}, value: {}", column, value);
+            return new ArrayList<>();
+        }
+
+        if (!ALLOWED_COLUMNS.contains(column)) {
+            logger.error("Invalid column for search: {}", column);
+            throw new IllegalArgumentException("Invalid column");
+        }
+
+        logger.info("Searching tasks by {} = {}", column, value);
+
+        try {
+            List<TaskDTO> result = taskDAO.searchTasks(column, value.trim());
+            logger.info("Search result count: {}", result.size());
+            return result;
+        } catch (Exception e) {
+            logger.error("Error during search operation", e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<TaskDTO> findPaginated(int page, int size) {
+        taskDAO = new TaskDAO();
+
+        logger.debug("Fetching paginated tasks - page: {}, size: {}", page, size);
+
+        return taskDAO.findPaginated(page, size);
+    }
 }

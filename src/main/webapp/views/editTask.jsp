@@ -3,6 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="model.User"%>
 <%@ page import="dto.TaskDTO"%>
+
 <%
 String username = (String) session.getAttribute("username");
 if (username == null) {
@@ -21,7 +22,10 @@ String dueDateValue = "";
 if (task.getDueDate() != null) {
 	dueDateValue = task.getDueDate().toString();
 }
+
+
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,14 +33,15 @@ if (task.getDueDate() != null) {
 <title>Edit Task</title>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/style.css">
-	<script src="${pageContext.request.contextPath}/js/showMessage.js"></script>
-	
+<script src="${pageContext.request.contextPath}/js/showMessage.js"></script>
+
 </head>
 <body>
 	<%@ include file="components/navbar.jsp"%>
 	<%@ include file="components/sidebar.jsp"%>
 
 	<div class="main-content">
+	
 		<div class="form-container">
 			<h2>Edit Task</h2>
 
@@ -130,5 +135,25 @@ if (task.getDueDate() != null) {
 			</form>
 		</div>
 	</div>
+
+	<script>
+    window.onload = function() {
+        const popup = document.getElementById('popup-message');
+
+        if (popup) {
+            setTimeout(function() {
+                popup.style.transition = "opacity 0.5s ease";
+                popup.style.opacity = "0";
+
+                setTimeout(() => popup.remove(), 500);
+
+                const url = new URL(window.location);
+                url.searchParams.delete('status');
+                window.history.replaceState({}, '', url);
+                
+            }, 3000); 
+        }
+    };
+</script>
 </body>
 </html>

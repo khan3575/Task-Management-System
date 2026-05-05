@@ -1,0 +1,26 @@
+2026-05-05 12:33:17 INFO  controller.auth.LoginServlet - LoginServlet initialized
+2026-05-05 12:33:17 INFO  controller.auth.LoginServlet - Accessing login page
+2026-05-05 12:33:25 INFO  controller.auth.LoginServlet - Login attempt for user: fahim 
+2026-05-05 12:33:25 INFO  service.UserService - Login attempt for username: fahim
+2026-05-05 12:33:25 INFO  util.DBConnection - JNDI DataSource initialized successfully
+2026-05-05 12:33:26 INFO  service.UserService - Login successful for username: fahim
+2026-05-05 12:33:26 INFO  controller.auth.LoginServlet - User logged in successfully: fahim
+2026-05-05 12:33:36 INFO  controller.task.AddTaskServlet - AddTaskServlet initialized
+2026-05-05 12:33:42 INFO  controller.task.AddTaskServlet - Task add attempt | user=fahim | title=fahim
+2026-05-05 12:33:42 INFO  service.TaskService - Adding task with title: fahim
+2026-05-05 12:33:42 INFO  service.TaskService - Task add result: true
+2026-05-05 12:33:42 INFO  controller.task.AddTaskServlet - Task added successfully | user=fahim | title=fahim
+2026-05-05 12:33:50 INFO  controller.task.DeleteTaskServlet - DeleteTaskServlet initialized
+2026-05-05 12:33:50 INFO  controller.task.DeleteTaskServlet - User 'fahim' attempting to delete task ID: 63
+2026-05-05 12:33:50 INFO  service.TaskService - Deleting task ID: 63
+2026-05-05 12:33:50 INFO  service.TaskService - Task delete result for ID 63: true
+2026-05-05 12:33:50 INFO  controller.task.DeleteTaskServlet - Task ID 63 deleted successfully by user 'fahim'
+2026-05-05 12:33:53 INFO  controller.task.UpdateTaskServlet - UpdateTaskServlet initialized
+2026-05-05 12:33:58 INFO  service.TaskService - Updating task ID: 62, Title: Hello
+2026-05-05 12:33:58 INFO  service.TaskService - Task update result for ID 62: true
+2026-05-05 12:33:58 INFO  controller.task.UpdateTaskServlet - Task updated successfully | taskId=62 | user=fahim
+2026-05-05 12:34:09 INFO  service.TaskService - Searching tasks by status = pending
+2026-05-05 12:34:09 INFO  service.TaskService - Search result count: 43
+2026-05-05 12:34:09 INFO  controller.task.SearchTaskServlet - Search completed - column: status, value: pending, results: 43
+2026-05-05 12:34:15 INFO  controller.auth.LogoutServlet - User logged out: fahim
+2026-05-05 12:34:15 INFO  controller.auth.LoginServlet - Accessing login page
