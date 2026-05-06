@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="team-card">
-                    <img src="<%= request.getContextPath() %>/images/member2.jpg" alt="Mahmud">
+                    <img src="<%= request.getContextPath() %>/images/member-mahmud.jpg" alt="Mahmud">
                     <p class="member-name">Mahmud</p>
                     <p class="member-role">Product Engineer</p>
                 </div>

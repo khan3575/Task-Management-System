@@ -1,6 +1,6 @@
 package controller.auth;
 
-import service.UserService;
+import java.io.IOException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,13 +8,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-
 import dto.UserDTO;
+import service.UserService;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 	
+	private static final long serialVersionUID = 1L;
 	private UserService userService;
 	 
 	@Override
@@ -42,9 +42,9 @@ public class LoginServlet extends HttpServlet {
         
         try{
             user = userService.login(username, password);
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            
+//            HttpSession session = request.getSession();
+//            session.setAttribute("user", user);
+//            
         } catch (Exception e) {
         	
             System.err.println("LoginServlet: unexpected error from UserService — " + e.getMessage());
@@ -61,9 +61,7 @@ public class LoginServlet extends HttpServlet {
             return;
         }
         
-        
-        
-        
+     
         
         HttpSession session = request.getSession();
         session.setAttribute("userId", user.getId());
