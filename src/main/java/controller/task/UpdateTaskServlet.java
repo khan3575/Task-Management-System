@@ -143,7 +143,7 @@ public class UpdateTaskServlet extends HttpServlet {
 			logger.debug("[After update ]: '{}'", newTask);
 			request.setAttribute("success", "Task updated successfully");
 		} else {
-			logger.error("Task Update failed");
+			logger.error("Task Update failed Database Error");
 			request.setAttribute("error", "Update failed");
 		}
 		TaskDTO task = taskService.getTaskById(taskId);
