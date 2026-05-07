@@ -15,6 +15,7 @@ import util.AppLogger;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 	
+	private static final long serialVersionUID = 1L;
 	private UserService userService;
 	 
 	@Override
