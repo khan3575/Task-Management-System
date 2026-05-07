@@ -7,25 +7,37 @@ import javax.naming.InitialContext;
 import javax.naming.Context;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 public class DBConnection {
-	
+	private static final Logger logger = LoggerFactory.getLogger(DBConnection.class);
 	private static DataSource dataSource;
 	
 	static {
 		
 			try {
+				logger.info("initializing JNDI DataSource for jdbc/TaskDB ");
 				Context initial = new InitialContext();
 				Context env = (Context) initial.lookup("java:/comp/env");
 				dataSource = (DataSource) env.lookup("jdbc/TaskDB");
+				logger.info("DataSource successfully initialized.");
+				
 			} catch (Exception e) {
+				logger.error("Error: JNDI failed for jdbc/TaskDB ", e);
 				throw new RuntimeException("JDNI failed ",e);
 			}
 		}
 	
 	public static Connection getConnection() throws SQLException
 	{
-		return dataSource.getConnection();
+		try {
+            logger.debug(" Attempting database connection from DataSource");
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            logger.error("Failed database connection", e);
+            throw e;
+        }
 	}
  
 	/*

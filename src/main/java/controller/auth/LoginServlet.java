@@ -11,8 +11,12 @@ import jakarta.servlet.http.HttpSession;
 import dto.UserDTO;
 import service.UserService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 	
 	private static final long serialVersionUID = 1L;
 	private UserService userService;
@@ -20,6 +24,7 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	public void init() {
 		userService = new UserService();
+		logger.info("loginServlet initialized and userService created");
 	}
 	
 	
@@ -33,11 +38,13 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
+        	logger.warn("Login rejected: Missing username or password fields.");
             request.setAttribute("error", "Username and password are required.");
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
             return;
         }
-
+        
+        logger.info("Login attempt for username: {}", username);
         UserDTO user = null;
         
         try{
@@ -47,6 +54,8 @@ public class LoginServlet extends HttpServlet {
 //            
         } catch (Exception e) {
         	
+        	
+        	logger.error("Unexpected error during login for user: {}", username, e);
             System.err.println("LoginServlet: unexpected error from UserService — " + e.getMessage());
             e.printStackTrace();
             
@@ -56,6 +65,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         if(user == null) {
+        	logger.warn("Failed login: incorrect username or password for username: {}", username);
             request.setAttribute("error", "Invalid username or password.");
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
             return;
@@ -67,6 +77,7 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("userId", user.getId());
         session.setAttribute("username", user.getUsername());
         session.setAttribute("lastLogin", user.getLastLoginDisplay());
+        logger.info("User '{}' logged in successfully. Session ID: {}", username, session.getId());
         
         response.sendRedirect(request.getContextPath()+"/home");
     }
@@ -77,6 +88,8 @@ public class LoginServlet extends HttpServlet {
  
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("username") != null) {
+        	
+        	logger.debug("a session found for user " + session.getAttribute("username")+" Redirecting to home.");
             response.sendRedirect(request.getContextPath() + "/home");
             return;
         }
