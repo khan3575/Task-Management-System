@@ -13,12 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 import dto.TaskDTO;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Servlet implementation class DashboardServlet
  */
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
+	private static final Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -40,6 +42,7 @@ public class DashboardServlet extends HttpServlet {
 	            if (page < 1) page = 1;
 	        }
 	    } catch (Exception e) {
+	    	logger.warn("Invalid page number: '{}'. setting the default value to page to 1.", request.getParameter("page"));
 	        page = 1;
 	    }
 
@@ -49,6 +52,7 @@ public class DashboardServlet extends HttpServlet {
 	    if (totalPages == 0) totalPages = 1;
 	    if (page > totalPages) page = totalPages;
 
+	    logger.debug("Fetching tasks for dashboard. Page: {} / Total Pages: {}", page, totalPages);
 	    List<TaskDTO> tasks = taskService.findPaginated(page, size);
 
 	    request.setAttribute("tasks", tasks);
@@ -58,9 +62,11 @@ public class DashboardServlet extends HttpServlet {
 	    boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
 
 	    if (isAjax) {
+	    	logger.debug("dashboard updated via AJAX");
 	        request.getRequestDispatcher("views/components/taskTable.jsp")
 	               .forward(request, response);
 	    } else {
+	    	logger.info("Full Dashboard page loaded and ready to access");
 	        request.getRequestDispatcher("views/dashboard.jsp")
 	               .forward(request, response);
 	    }
@@ -76,6 +82,7 @@ public class DashboardServlet extends HttpServlet {
 		String action = request.getParameter("action");
 
 		if ("delete".equals(action)) {
+			logger.info("Dashboard Action: DELETE for Task ID: {}", request.getParameter("id"));
 			int id = Integer.parseInt(request.getParameter("id"));
 			request.getRequestDispatcher("deleteTask").forward(request, response);
 		}
