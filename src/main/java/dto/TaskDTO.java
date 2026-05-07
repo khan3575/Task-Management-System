@@ -50,7 +50,7 @@ public class TaskDTO {
     
     @Override
     public String toString() {
-        return "TaskDTO [id=" + id + ", title=" + title + ", priority=" + priority + ", status=" + status + "]";
+        return "TaskDTO [id=" + id + ", title=" + title + ", Description : "+description+ ", priority=" + priority + ", status=" + status+"Due Date: "+dueDate +" Created At : "+createdAt + "]";
     }
 
 	
