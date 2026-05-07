@@ -7,8 +7,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class UserDAO {
+	private static final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
     public User findByUsername(String username) {
         String sql = "SELECT id, username, email, password FROM users WHERE username = ?";
@@ -31,13 +35,13 @@ public class UserDAO {
 //                    
 //                    if (ts != null) user.setCreated_at(ts.toLocalDateTime());
                     
-                    
+                    logger.info("Attepting findUserByName "+ ps +" user : "+ user);
                     return user;
                 }
             }
 
         } catch (SQLException e) {
-            System.err.println("UserDAO.findByUsername: DB error for username=" + username + " " + e.getMessage());
+        	logger.error("UserDAO.findByUsername: DB error for username=" + username + " " + e.getMessage());
         }
 
         return null;
