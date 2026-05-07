@@ -11,8 +11,11 @@ import dto.TaskDTO;
 import model.Task;
 import util.DBConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskDAO {
+	private static final Logger logger = LoggerFactory.getLogger(TaskDAO.class);
 	// FAHIM's method: Add a new task to database
     public boolean addTask(TaskDTO taskDTO) {
         String sql = "INSERT INTO tasks (title, description, priority, status, due_date) VALUES (?, ?, ?, ?, ?)";
@@ -25,13 +28,13 @@ public class TaskDAO {
             pstmt.setString(3, taskDTO.getPriority());
             pstmt.setString(4, taskDTO.getStatus());
             pstmt.setDate(5, taskDTO.getDueDate());
+            logger.info("Add Task query : " + pstmt);
             
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            System.err.println("Error adding task: " + e.getMessage());
-            e.printStackTrace();
+        	logger.error("Database Error Failed to Add task '{}' Error '{}' ", taskDTO, e);
             return false;
         }
     }
@@ -49,13 +52,13 @@ public class TaskDAO {
             pstmt.setString(4, taskDTO.getStatus());
             pstmt.setDate(5, taskDTO.getDueDate());
             pstmt.setInt(6, taskDTO.getId());
+            logger.info("Update Task query : " + pstmt);
             
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            System.err.println("Error updating task: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Database Error Failed to Update Task. Database Error \n"+e);
             return false;
         }
     }
@@ -68,12 +71,14 @@ public class TaskDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             pstmt.setInt(1, taskId);
+            
             ResultSet rs = pstmt.executeQuery();
+            logger.debug("Query : '{}' resultSet is null : '{}'",pstmt, (rs==null) );
             return rs.next();
             
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        	logger.error("Database error Failed to determine if Task exists -> taskExists()  "+e);
+        	return false;
         }
     }
     
@@ -86,7 +91,8 @@ public class TaskDAO {
             
             pstmt.setInt(1, taskId);
             ResultSet rs = pstmt.executeQuery();
-            
+            	
+            logger.debug("query: '{}' resultset is null : '{}'", pstmt , (rs==null));
             if(rs.next()) {
                 TaskDTO task = new TaskDTO();
                 task.setId(rs.getInt("id"));
@@ -100,6 +106,7 @@ public class TaskDAO {
             }
             
         } catch (SQLException e) {
+        	logger.error("Database Error failed to getTaskById: "+e);
             e.printStackTrace();
         }
         return null;
@@ -108,16 +115,20 @@ public class TaskDAO {
     //deleteTask-mehedi
     public boolean deleteTask(int taskId) {
         String sql = "DELETE FROM tasks WHERE id = ?";
- 
+        
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement prepstmt = conn.prepareStatement(sql)) {
  
             prepstmt.setInt(1, taskId);
             
             int rowsAffected = prepstmt.executeUpdate();
+
+            logger.debug("query: '{}' row deleted : '{}'", prepstmt , (rowsAffected ==1));
             return rowsAffected > 0;
  
         } catch (SQLException e) {
+        	
+        	logger.error("Database error failed to Delete task by ID "+ e);
             System.err.println("TaskDAO: Error deleting task ID " + taskId + " — " + e.getMessage());
             return false;
         }
@@ -141,11 +152,14 @@ public class TaskDAO {
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(rs.getDate("due_date"));
                 task.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                
                 tasks.add(task);
             }
+            logger.debug("Query : "+ pstmt + "task list size : " + tasks.size());
             
         } catch (SQLException e) {
-            e.printStackTrace();
+        	logger.error("Database error failed to getAllTasks "+ e);
+
         }
         return tasks;
     }
@@ -161,7 +175,7 @@ public class TaskDAO {
             if (rs.next()) return rs.getInt(1);
 
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error("Database Error failed to get task count() " + e);
         }
 
         return 0;
@@ -208,6 +222,7 @@ public class TaskDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("Database Error Failed to searchTasks() "+ e);
         }
 
         return list;

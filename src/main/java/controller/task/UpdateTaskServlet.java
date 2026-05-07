@@ -149,7 +149,7 @@ public class UpdateTaskServlet extends HttpServlet {
 		TaskDTO task = taskService.getTaskById(taskId);
 		request.setAttribute("task", task);
 
-		request.getRequestDispatcher("/views/editTask.jsp").forward(request, response);
+		request.getRequestDispatcher("/views/dashboard.jsp").forward(request, response);
 	}
 
 
