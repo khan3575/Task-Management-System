@@ -8,12 +8,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserService {
 
-    private static final Logger logger = LogManager.getLogger(UserService.class);
+	private static final Logger logger =
+	        LoggerFactory.getLogger(UserService.class);
 
     private static final DateTimeFormatter DISPLAY_FORMAT =
             DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a");

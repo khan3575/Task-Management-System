@@ -10,12 +10,13 @@ import dto.TaskDTO;
 import model.Task;
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskService {
 
-    private static final Logger logger = LogManager.getLogger(TaskService.class);
+	private static final Logger logger =
+	        LoggerFactory.getLogger(TaskService.class);
 
     private TaskDAO taskDAO;
 
