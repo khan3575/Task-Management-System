@@ -152,6 +152,7 @@ function showUpdateError(message) {
 
 }
 
+
 // For initial load
 document.addEventListener("DOMContentLoaded", function() {
     fetchTasks(1);

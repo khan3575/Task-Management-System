@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import dto.UserDTO;
 import service.UserService;
+import util.AppLogger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,6 @@ public class LoginServlet extends HttpServlet {
 		userService = new UserService();
 		logger.info("loginServlet initialized and userService created");
 	}
-	
 	
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -72,12 +72,20 @@ public class LoginServlet extends HttpServlet {
         }
         
      
-        
         HttpSession session = request.getSession();
         session.setAttribute("userId", user.getId());
         session.setAttribute("username", user.getUsername());
         session.setAttribute("lastLogin", user.getLastLoginDisplay());
         logger.info("User '{}' logged in successfully. Session ID: {}", username, session.getId());
+        
+        String path = request.getServletContext().getRealPath("/logs/app.log");
+        AppLogger.log(
+                    path,
+                    "LOGIN",
+                    "User Logged in",
+                    (String)session.getAttribute("username"),
+                    "title= "
+        );
         
         response.sendRedirect(request.getContextPath()+"/home");
     }
