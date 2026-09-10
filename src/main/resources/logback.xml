@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
 
-<configuration debug="true">
+    <!--
+      ${catalina.base} is a system property Tomcat sets to its own
+      install directory, so this resolves correctly on Linux, Windows,
+      and inside a container. The previous value was an absolute
+      Windows path (C:/Users/mosta/...) which on Linux was treated as a
+      relative path and created a literal "C:" directory.
+    -->
+    <property name="LOG_PATH" value="${catalina.base}/logs/app.log"/>
 
-	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
-
-    <!-- LOG PATH (PROJECT DIRECTORY) -->
-    <property name="LOG_PATH"
-              value="C:/Users/mosta/git/Task Management System/logs/app.log"/>
-
-    <!-- ================= CONSOLE ================= -->
-    <appender name="STDOUT"
-              class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- ================= FILE ================= -->
-    <appender name="FILE"
-              class="ch.qos.logback.core.FileAppender">
-
+    <!--
+      RollingFileAppender instead of FileAppender with <append>false</append>,
+      which truncated the whole log on every restart. This rolls daily and
+      keeps 30 days, so history survives a redeploy.
+    -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}</file>
-        <append>false</append>
-
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-
     </appender>
 
-    
-    <root level="DEBUG">
+    <!--
+      Your own packages at DEBUG while developing; everything else at INFO
+      so third-party libraries do not drown out your logs.
+    -->
+    <logger name="controller" level="DEBUG"/>
+    <logger name="service"    level="DEBUG"/>
+    <logger name="dao"        level="DEBUG"/>
+    <logger name="util"       level="DEBUG"/>
+
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </root>

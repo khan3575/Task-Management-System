@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Coordinates: how this artifact is identified. -->
+    <groupId>com.taskmanagement</groupId>
+    <artifactId>task-management-system</artifactId>
+    <version>1.0.0</version>
+
+    <!-- Build a .war (web archive), not a .jar. -->
+    <packaging>war</packaging>
+
+    <name>Task Management System</name>
+
+    <properties>
+        <!--
+          Compile to Java 21 bytecode even though the local JDK is 26.
+          The Tomcat image runs JDK 21, and a JVM cannot load class files
+          newer than itself. "release" (not source/target) also checks that
+          we only call APIs that existed in 21.
+        -->
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <!--
+          Servlet API - PROVIDED.
+          Needed to compile (HttpServlet, @WebServlet, HttpSession...),
+          but Tomcat already ships it. Bundling a second copy causes
+          ClassCastException / LinkageError at runtime.
+          6.0 = Jakarta EE 10 = Tomcat 10.1+ / 11. Matches web.xml version 6.0.
+        -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+          JSP API - PROVIDED, same reasoning. Needed so JSP-related
+          classes resolve at compile time.
+        -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+          MySQL driver - PROVIDED, and this one is subtle.
+          The connection pool is declared in context.xml, which means
+          TOMCAT creates it, using Tomcat's own classloader. That
+          classloader cannot see inside WEB-INF/lib. So the driver must
+          live in $CATALINA_HOME/lib instead - the Dockerfile copies it
+          there. "provided" keeps it out of the WAR so there is exactly
+          one copy on the server.
+        -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--
+          Logging - COMPILE (the default scope), so it ships inside
+          WEB-INF/lib. Tomcat does not provide logback, so we must.
+          logback-classic pulls logback-core and slf4j-api in
+          transitively - Maven resolves that graph for us, which is
+          exactly what hand-copied jars could not do.
+        -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.9</version>
+        </dependency>
+
+        <!--
+          JSTL - the tag library that makes <c:out> available.
+          Two artifacts by design: the API (interfaces) and the
+          Glassfish implementation. Both ship in the WAR.
+          This is what will replace the unescaped <%= %> scriptlets
+          that currently allow XSS.
+        -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!--
+          Produces target/ROOT.war. Tomcat treats a webapp named ROOT as
+          the default context, so the app serves at "/" rather than
+          "/task-management-system".
+        -->
+        <finalName>ROOT</finalName>
+    </build>
+
+</project>
