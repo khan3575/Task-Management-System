@@ -1,0 +1,76 @@
+# =============================================================
+#  Local development stack: MySQL + Tomcat
+#     docker compose up --build      start (first run builds)
+#     docker compose logs -f app     watch Tomcat
+#     docker compose down            stop (data survives)
+# =============================================================
+
+services:
+
+  # -----------------------------------------------------------
+  #  MySQL 8
+  # -----------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: tms-db
+
+    environment:
+      # NOTE: deliberately no MYSQL_DATABASE here. The image would
+      # create the schema itself, and then schema.sql's first line
+      # (CREATE DATABASE task_management_system) would fail with
+      # "database exists" and abort the whole init. Letting the script
+      # own creation keeps database/schema.sql usable unchanged.
+      MYSQL_ROOT_PASSWORD: localdevpassword
+
+    volumes:
+      # Named volume = the data lives OUTSIDE the container, so
+      # "docker compose down" does not delete your tasks and users.
+      # Without this line the database is wiped every time you stop.
+      - mysql_data:/var/lib/mysql
+
+      # Anything in /docker-entrypoint-initdb.d runs automatically,
+      # but ONLY on first initialisation of an empty data directory.
+      # To re-run it later you must drop the volume (see notes below).
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+    # Bound to 127.0.0.1 so it is reachable from your machine with a
+    # MySQL client, but never from the network.
+    ports:
+      - "127.0.0.1:3306:3306"
+
+    # The app must not start until MySQL is genuinely accepting
+    # connections. "Container started" is not the same as "ready".
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-plocaldevpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+    restart: unless-stopped
+
+  # -----------------------------------------------------------
+  #  Tomcat 11 + the application
+  # -----------------------------------------------------------
+  app:
+    build: .
+    container_name: tms-app
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    volumes:
+      # The datasource definition, mounted from outside the image.
+      # A context descriptor here OVERRIDES the META-INF/context.xml
+      # inside the WAR - which is how the same artifact runs in every
+      # environment with different credentials. Read-only on purpose.
+      - ./docker/tomcat/ROOT.xml:/usr/local/tomcat/conf/Catalina/localhost/ROOT.xml:ro
+
+    ports:
+      - "8080:8080"
+
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

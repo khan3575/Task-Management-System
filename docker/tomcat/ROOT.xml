@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Server-side context configuration, mounted into the container at
+      /usr/local/tomcat/conf/Catalina/localhost/ROOT.xml
+
+  A context file in conf/Catalina/<host>/ takes PRECEDENCE over the
+  META-INF/context.xml packaged inside the WAR. That is the hook which
+  lets one identical WAR run in every environment: the artifact carries
+  no credentials and no hostnames, and each machine supplies its own.
+
+  Note the host is "db", not "localhost". Inside the app container
+  "localhost" is that container - there is no MySQL there. Docker's
+  embedded DNS resolves compose service names, so "db" reaches the
+  database container.
+
+  For production this same file lives on the server, chmod 600, owned by
+  the tomcat user, holding a dedicated MySQL account instead of root.
+-->
+<Context>
+    <Resource name="jdbc/TaskDB"
+              auth="Container"
+              type="javax.sql.DataSource"
+
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://db:3306/task_management_system?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"
+              username="root"
+              password="localdevpassword"
+
+              maxTotal="20"
+              maxIdle="10"
+              maxWaitMillis="10000"
+
+              testOnBorrow="true"
+              validationQuery="SELECT 1"/>
+</Context>
